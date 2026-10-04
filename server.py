@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 AEGIS-CUAS PRODUCTION BACKEND SERVER WITH LIVE API INTEGRATION & AI TACTICAL ADVISOR
 Includes Open-Meteo Live Weather API Proxy, OpenSky ADS-B Airspace Feed Proxy,

@@ -1,6 +1,6 @@
 services:
   - type: web
     name: aegis-cuas-drone-simulator
-    env: python
+    runtime: python
     buildCommand: "pip install --upgrade pip"
-    startCommand: "python server.py"
+    startCommand: "python3 server.py"
