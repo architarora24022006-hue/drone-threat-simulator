@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+  <title>GARUDA-RAKSHAK // AEGIS C-UAS Tactical Command & Control System</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "on-surface": "#dae3f1",
+            "surface-container": "#17202b",
+            "on-tertiary-container": "#003f4b",
+            "on-primary": "#003824",
+            "on-surface-variant": "#bbcabf",
+            "surface-container-lowest": "#060f18",
+            "surface": "#0b141e",
+            "tertiary": "#4cd7f6",
+            "surface-tint": "#4edea3",
+            "surface-variant": "#2d3640",
+            "on-error-container": "#ffdad6",
+            "tertiary-container": "#00b2d0",
+            "on-error": "#690005",
+            "error": "#ffb4ab",
+            "secondary": "#ffb77a",
+            "surface-container-high": "#222b35",
+            "on-background": "#dae3f1",
+            "secondary-container": "#d7790d",
+            "error-container": "#93000a",
+            "background": "#0b141e",
+            "primary-container": "#10b981",
+            "primary": "#4edea3",
+            "surface-container-highest": "#2d3640",
+            "outline": "#86948a",
+            "surface-container-low": "#131c26"
+          },
+          fontFamily: {
+            mono: ["JetBrains Mono", "monospace"],
+            sans: ["Inter", "sans-serif"]
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    body { overscroll-behavior: none; font-family: 'Inter', sans-serif; background-color: #0b141e; }
+    ::-webkit-scrollbar { display: none; }
+    .tab-content { display: none; }
+    .tab-content.active { display: flex; }
+    .nav-btn.active { color: #4edea3; border-bottom: 2px solid #4edea3; background: rgba(78, 222, 163, 0.08); }
+    @media print {
+      header, nav, #toast-modal, .no-print { display: none !important; }
+      body { background: white !important; color: black !important; }
+      .tab-content { display: flex !important; }
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface font-sans flex flex-col min-h-screen">
+
+  <!-- TOP HEADER & TACTICAL COMMAND CONSOLE -->
+  <header class="fixed top-0 w-full z-50 pt-safe bg-surface-container-lowest/95 backdrop-blur-xl border-b border-surface-container-high shadow-lg">
+    <div class="px-4 py-2 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-md bg-surface-container-high border border-primary/40 flex items-center justify-center text-primary shadow-[0_0_12px_rgba(78,222,163,0.2)]">
+          <span class="material-symbols-outlined text-[24px]">radar</span>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-mono text-[10px] text-primary tracking-widest uppercase font-bold">GARUDA-RAKSHAK C2</span>
+            <span class="px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-mono text-[9px] font-bold border border-surface-container-highest">MIL-STD-2525D</span>
+            <span class="px-1.5 py-0.5 rounded bg-error-container/40 text-error font-mono text-[9px] font-bold border border-error/30 animate-pulse">DEFCON ALPHA</span>
+          </div>
+          <h1 class="text-base font-extrabold text-on-surface uppercase tracking-tight">C-UAS AI Threat Simulation & Tactical Execution System</h1>
+        </div>
+      </div>
+
+      <!-- System Diagnostic & Sector Monitor -->
+      <div class="hidden lg:flex items-center gap-4 text-right border-l border-surface-container-high pl-4">
+        <div>
+          <div class="flex items-center justify-end gap-1 font-mono text-[10px] text-tertiary">
+            <span class="material-symbols-outlined text-[12px]">public</span>
+            <select class="bg-surface-container text-tertiary font-mono text-[10px] px-1.5 py-0.5 rounded border border-tertiary/30 cursor-pointer outline-none" id="sector-select" onchange="changeDefenseSector(this.value)">
+              <option value="leh">LEH-LADAKH SECTOR (HIGH ALTITUDE)</option>
+              <option value="jaisalmer">THAR DESERT / JAISALMER BORDER</option>
+              <option value="siliguri">SILIGURI CORRIDOR / NORTH-EAST</option>
+              <option value="pathankot">PATHANKOT AIR BASE SECTOR</option>
+            </select>
+          </div>
+          <div class="font-mono text-[11px] font-bold text-on-surface mt-0.5" id="weather-temp-label">18.5°C // WIND 12.4 KM/H</div>
+          <div class="font-mono text-[9px] text-tertiary mt-0.5" id="sector-grid-label">GRID: 34°09'N 77°34'E // LEH BASE</div>
+        </div>
+
+        <!-- Gap 1 Minimal Hardware Edge Monitor & Tactical Audio Toggle -->
+        <div class="border-l border-surface-container-high pl-3 font-mono text-[10px] flex flex-col items-end gap-1">
+          <div class="text-primary font-bold flex items-center justify-end gap-1">
+            <span class="material-symbols-outlined text-[12px]">memory</span>
+            <span>EDGE GPU: GTX 1650 / QUEST 3 (60 FPS)</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-secondary" id="hw-metrics-label">VRAM: 1.2GB // INT8: 0.8ms</span>
+            <button class="bg-surface-container text-primary px-2 py-0.5 rounded font-mono text-[9px] border border-primary/40 flex items-center gap-1 hover:bg-primary/20 transition-all" id="audio-toggle-btn" onclick="toggleTacticalAudio()">
+              <span class="material-symbols-outlined text-[11px]" id="audio-icon">volume_up</span>
+              <span id="audio-status-label">AUDIO: ON</span>
+            </button>
+            <button class="bg-surface-container text-tertiary px-2 py-0.5 rounded font-mono text-[9px] border border-tertiary/40 flex items-center gap-1 hover:bg-tertiary/20 transition-all" onclick="toggleAIChatDrawer()">
+              <span class="material-symbols-outlined text-[11px]">smart_toy</span>
+              <span>AI CHAT ASSISTANT</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Cadet Officer Avatar -->
+        <img alt="Officer Profile" class="w-9 h-9 rounded-full border border-primary/50 object-cover shadow-md" src="https://lh3.googleusercontent.com/aida/AEtjO1UPTZ1t4J92qF_KhTwvsoVfPRvxIMut-m0qfApBT4RrrNYetLFSF2f0CdfiS7VM2QevsfSI8t8DUMoN0Xrd_zDjBi8wX3ORI9BhQ-0aWwPxtJ2Dn4rBZYT5twaHpdLK5ZnSDbx5YiyOuoQFwwvkmiPGU29x8blnI1xl9io6_S_QogjvA93oTIk8fiz58Sc3i2zkpywEoPblOluyDI-QpwZt8P5KlOdVID8vBgLySXmybYDSdqIFIuj7ico"/>
+      </div>
+    </div>
+
+    <!-- MAIN TACTICAL MODULE TABS -->
+    <nav class="flex items-center justify-around bg-surface-container-low border-t border-surface-container-high px-2 font-mono text-xs">
+      <button class="nav-btn active flex items-center gap-1.5 px-3 py-2.5 transition-all" onclick="switchTab('radar')" id="tab-btn-radar">
+        <span class="material-symbols-outlined text-[18px]">radar</span>
+        <span>1. SURVEILLANCE RADAR (GAP 1)</span>
+      </button>
+      <button class="nav-btn flex items-center gap-1.5 px-3 py-2.5 transition-all text-on-surface-variant hover:text-on-surface" onclick="switchTab('sensors')" id="tab-btn-sensors">
+        <span class="material-symbols-outlined text-[18px]">graphic_eq</span>
+        <span>2. RFVIEW & SPECTRUM ANALYSIS (GAP 2)</span>
+      </button>
+      <button class="nav-btn flex items-center gap-1.5 px-3 py-2.5 transition-all text-on-surface-variant hover:text-on-surface" onclick="switchTab('triage')" id="tab-btn-triage">
+        <span class="material-symbols-outlined text-[18px]">alt_route</span>
+        <span>3. TRIAGE & COGNITIVE WORKLOAD (GAP 3)</span>
+      </button>
+      <button class="nav-btn flex items-center gap-1.5 px-3 py-2.5 transition-all text-on-surface-variant hover:text-on-surface" onclick="switchTab('director')" id="tab-btn-director">
+        <span class="material-symbols-outlined text-[18px]">psychology</span>
+        <span>4. AI SCENARIO DIRECTOR (GAP 4)</span>
+      </button>
+      <button class="nav-btn flex items-center gap-1.5 px-3 py-2.5 transition-all text-on-surface-variant hover:text-on-surface" onclick="switchTab('aar')" id="tab-btn-aar">
+        <span class="material-symbols-outlined text-[18px]">analytics</span>
+        <span>5. INTEGRATED PIPELINE & AAR (GAP 5)</span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- MAIN CONTENT CONTAINER -->
+  <main class="flex-1 pt-28 pb-20 px-4 max-w-7xl mx-auto w-full">
+
+    <!-- TAB 1: SURVEILLANCE RADAR & GAP 1 EDGE PHYSICS ACCELERATION -->
+    <section class="tab-content active flex-col gap-4" id="tab-radar">
+      
+      <!-- Priority Alert Banner -->
+      <div class="w-full bg-error-container/90 text-on-error-container p-3 rounded-md flex items-center justify-between shadow-md border border-error/40">
+        <div class="flex items-center gap-3">
+          <div class="w-3 h-3 rounded-full bg-error animate-ping"></div>
+          <div>
+            <span class="font-mono text-[10px] text-error font-bold uppercase tracking-wider">TACTICAL SATURATION ALERT // SECTOR-7 PERIMETER</span>
+            <p class="font-bold text-sm text-on-error-container">MULTIPLE UNIDENTIFIED SWARM TARGETS CONVERGING ON DEFENDED BASE</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 bg-surface-container-lowest/80 px-3 py-1 rounded font-mono text-xs font-bold text-error border border-error/30">
+          <span class="material-symbols-outlined text-[16px]">warning</span>
+          <span id="threat-tmin-label">T-MINUS 01:24</span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        
+        <!-- 360 Tactical Radar Display (Col 1 & 2) -->
+        <div class="lg:col-span-2 bg-surface-container-lowest rounded-md p-4 border border-surface-container-high shadow-xl flex flex-col gap-3 relative overflow-hidden">
+          <div class="flex items-center justify-between z-10">
+            <div class="flex items-center gap-2 font-mono text-xs text-primary font-bold">
+              <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+              <span>GAP 1: SPATIAL PARTITIONING GRID // O(N) FLOCKING ACCELERATION</span>
+            </div>
+            
+            <div class="font-mono text-xs text-on-surface-variant flex items-center gap-2">
+              <button class="bg-surface-container text-secondary px-2 py-0.5 rounded font-mono text-[10px] border border-secondary/30 flex items-center gap-1" onclick="toggleADSBFeed()">
+                <span class="material-symbols-outlined text-[12px]">flight</span>
+                <span id="adsb-toggle-label">ADS-B AIRSPACE: ON</span>
+              </button>
+              <button class="bg-surface-container text-tertiary px-2 py-0.5 rounded font-mono text-[10px] border border-tertiary/30" id="range-toggle-btn" onclick="toggleRadarRange()">SPAN: 2.0 KM</button>
+            </div>
+          </div>
+
+          <!-- Radar Canvas Display -->
+          <div class="relative w-full aspect-square max-h-[420px] mx-auto rounded bg-surface-container-lowest flex items-center justify-center border border-surface-container-high overflow-hidden" id="radar-container">
+            <div class="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent pointer-events-none"></div>
+
+            <!-- Range Rings -->
+            <div class="absolute w-[90%] h-[90%] rounded-full border border-surface-container-high flex items-center justify-center">
+              <span class="absolute top-1 font-mono text-[9px] text-outline-variant">2000M RANGE RING</span>
+              <div class="w-[66%] h-[66%] rounded-full border border-surface-container-high flex items-center justify-center">
+                <span class="absolute top-1 font-mono text-[9px] text-outline-variant">1000M RANGE RING</span>
+                <div class="w-[50%] h-[50%] rounded-full border border-primary/20 flex items-center justify-center">
+                  <span class="absolute top-1 font-mono text-[9px] text-primary/70">500M KILL ZONE</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Radar Sweeper Animation -->
+            <div class="absolute inset-0 pointer-events-none">
+              <div class="w-full h-full rounded-full origin-center animate-[spin_4s_linear_infinite]" style="background: conic-gradient(from 0deg, rgba(78, 222, 163, 0.30) 0deg, rgba(78, 222, 163, 0) 60deg);"></div>
+            </div>
+
+            <!-- Central Base Array -->
+            <div class="absolute w-5 h-5 bg-primary text-on-primary rounded-sm flex items-center justify-center shadow-lg z-20" title="DEFENDED BASE ARRAY">
+              <span class="material-symbols-outlined text-[12px] font-bold">security</span>
+            </div>
+
+            <!-- Dynamic Targets Layer -->
+            <div class="absolute inset-0 z-20" id="radar-targets-layer"></div>
+
+            <!-- Animated Visual FX Layer (Missile Tracers, Shockwaves, Explosions) -->
+            <canvas class="absolute inset-0 w-full h-full pointer-events-none z-25" id="radar-fx-canvas"></canvas>
+          </div>
+
+          <!-- Command Quick Action Buttons -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 font-mono text-xs pt-2 border-t border-surface-container-high">
+            <button class="bg-primary text-on-primary py-2 px-3 rounded font-bold uppercase flex items-center justify-center gap-1.5 shadow active:scale-[0.99] transition-transform" onclick="triggerScrambleAction()">
+              <span class="material-symbols-outlined text-[18px]">rocket_launch</span>
+              <span>SCRAMBLE KINETIC INTERCEPT</span>
+            </button>
+            <button class="bg-secondary-container text-on-secondary-container py-2 px-3 rounded font-bold uppercase flex items-center justify-center gap-1.5 shadow active:scale-[0.99] transition-transform" onclick="triggerJammerAction()">
+              <span class="material-symbols-outlined text-[18px]">wifi_protected_setup</span>
+              <span>ENABLE C-BAND RF JAMMER</span>
+            </button>
+            <button class="bg-surface-container-high text-on-surface py-2 px-3 rounded font-bold uppercase flex items-center justify-center gap-1.5 shadow active:scale-[0.99] transition-transform" onclick="triggerLockdownAction()">
+              <span class="material-symbols-outlined text-[18px]">lock</span>
+              <span>DEPOT LOCKDOWN</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Live Target Telemetry Panel (Col 3) -->
+        <div class="bg-surface-container rounded-md p-4 border border-surface-container-high flex flex-col gap-3 shadow-xl">
+          <div class="flex items-center justify-between border-b border-surface-container-high pb-2 font-mono text-xs">
+            <span class="font-bold text-on-surface flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-primary text-[16px]">crosshair</span>
+              TARGET TRACK TELEMETRY
+            </span>
+            <span class="text-tertiary font-mono" id="target-lock-id">LOCK: FPV-STRIKE-01</span>
+          </div>
+
+          <!-- Selected Target Details Card -->
+          <div class="bg-surface-container-lowest p-3 rounded border border-error/30 flex flex-col gap-2 font-mono text-xs">
+            <div class="flex items-center justify-between text-error font-bold">
+              <span id="tgt-class-label">CLASSIFICATION: KINETIC STRIKER FPV</span>
+              <span class="bg-error/20 px-1.5 py-0.5 rounded text-[10px]">PRIORITY 1</span>
+            </div>
+            <div class="grid grid-cols-2 gap-2 text-[11px] text-on-surface-variant">
+              <div>RANGE: <span class="text-on-surface font-bold" id="tgt-range">342M</span></div>
+              <div>BEARING: <span class="text-on-surface font-bold" id="tgt-azimuth">046°</span></div>
+              <div>SPEED: <span class="text-on-surface font-bold" id="tgt-speed">42.5 M/S</span></div>
+              <div>ALTITUDE: <span class="text-on-surface font-bold" id="tgt-alt">28.4M AGL</span></div>
+              <div>THREAT SCORE: <span class="text-error font-bold" id="tgt-threat-score">94.2 / 100</span></div>
+              <div>CLOSING RATE: <span class="text-error font-bold" id="tgt-closing">+38.2 M/S</span></div>
+            </div>
+          </div>
+
+          <!-- AI Tactical Advisor & Voice Alert Widget -->
+          <div class="bg-surface-container-high p-3 rounded border border-tertiary/30 flex flex-col gap-2 font-mono text-xs">
+            <div class="flex items-center justify-between text-tertiary font-bold">
+              <span class="flex items-center gap-1">
+                <span class="material-symbols-outlined text-[16px]">psychology</span>
+                AI TACTICAL ADVISOR & VOICE
+              </span>
+              <button class="text-[10px] text-primary flex items-center gap-0.5 hover:underline" onclick="speakVoiceAlert()">
+                <span class="material-symbols-outlined text-[12px]">volume_up</span>
+                <span>SPEAK ALERT</span>
+              </button>
+            </div>
+            <p class="text-[11px] text-on-surface-variant leading-relaxed" id="ai-recommendation">
+              Small RCS suggests micro-multirotor or FPV; C-band RF jammer will sever C2 telemetry link with zero collateral risk.
+            </p>
+            <div class="flex gap-2 mt-1">
+              <button class="flex-1 bg-tertiary text-on-tertiary-container py-1.5 rounded font-bold text-[11px] hover:bg-tertiary-container transition-all" onclick="executeQuickEngage('jam')">ENGAGE RF JAMMER</button>
+              <button class="flex-1 bg-error text-on-error py-1.5 rounded font-bold text-[11px] hover:bg-error-container transition-all" onclick="executeQuickEngage('kinetic')">FIRE INTERCEPTOR</button>
+            </div>
+          </div>
+
+          <!-- Active Swarm Target Queue -->
+          <div class="flex-1 flex flex-col gap-1.5 overflow-y-auto max-h-[180px] font-mono text-[11px]" id="swarm-target-queue">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- TAB 2: GAP 2 REALISTIC RFVIEW PROPAGATION & MULTI-SPECTRAL SENSORS -->
+    <section class="tab-content flex-col gap-4" id="tab-sensors">
+      
+      <!-- Fleet Armament Image Cards (Preserved from Stitch UI) -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        
+        <!-- Fleet Item 1: BHISMA SKY-PATROL HEXA -->
+        <div class="flex flex-col bg-surface-container rounded-lg overflow-hidden border border-surface-container-high shadow-md">
+          <div class="relative w-full h-36 bg-surface-container-lowest">
+            <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBuuIrHgD8rAQKfjs80Bs2NyNEOS71LBD15M81qaR_h_TsteRqGAq8LVpzJIjtb_s46JKgARfirop9JHPQOLjmmR6qveboT3hB28kwFTwlTqk_bPyeOnD2B0mkwzMwavqyhgoKe9FeLSQ9ma0o_x4xsDt9gkmqLIeft6bNWbQ3oHGmZcdAPA8NYsPVz5PHuAZO49z99g47eIaBAV3ZmECeLVbvbtuUjIIAAfRavDH_GtCyu0LrJj9IQ"/>
+            <div class="absolute inset-0 bg-gradient-to-t from-surface-container via-surface-container/30 to-transparent"></div>
+            <div class="absolute top-2 left-2 flex items-center gap-1 bg-surface-container-lowest/90 backdrop-blur-md px-2 py-0.5 rounded font-mono text-[9px]">
+              <span class="w-1.5 h-1.5 bg-secondary rounded-full animate-ping"></span>
+              <span class="text-secondary font-bold">AIRBORNE // PERIMETER</span>
+            </div>
+            <div class="absolute top-2 right-2 bg-surface-container-lowest/90 backdrop-blur-md px-2 py-0.5 rounded font-mono text-[9px] text-on-surface">74% PWR</div>
+          </div>
+          <div class="p-3 flex flex-col gap-1 font-mono text-xs">
+            <h3 class="font-bold text-on-surface uppercase">BHISMA SKY-PATROL HEXA</h3>
+            <p class="text-[11px] text-on-surface-variant">Role: Deep perimeter surveillance, contraband detection & acoustic tracking.</p>
+            <button class="w-full bg-secondary/20 text-secondary border border-secondary/40 font-mono text-[10px] font-bold py-1.5 rounded hover:bg-secondary/40 transition-all mt-1 flex items-center justify-center gap-1" onclick="deployFleetAsset('bhisma')">
+              <span class="material-symbols-outlined text-[12px]">radar</span>
+              <span>LAUNCH ACOUSTIC PATROL</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Fleet Item 2: VAJRA-EMP DISRUPTOR -->
+        <div class="flex flex-col bg-surface-container rounded-lg overflow-hidden border border-surface-container-high shadow-md">
+          <div class="relative w-full h-36 bg-surface-container-lowest">
+            <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBMfRK058bM1CJ7SAoMaqfabJnKvv_amL_Fg5WPU1EUiDELpMbkCEtFtEB0idXQ0CByfgJnKNQW0wz9vOgpAbh5yYaep0d98qToOGVAcEabZzW8Ziqmp-lTmYTPVt7Z1fSQEfr37iEKwzxJXrqwX0LeLIuaRrpQ2KCaa-d6nCzejOINQBfNUFcw13hPUFDsCSDfQ9Yka38mvUCSDBA3cORUt56xCk-MSzCSRSR479HQn94isE6VZmyM"/>
+            <div class="absolute inset-0 bg-gradient-to-t from-surface-container via-surface-container/30 to-transparent"></div>
+            <div class="absolute top-2 left-2 flex items-center gap-1 bg-surface-container-lowest/90 backdrop-blur-md px-2 py-0.5 rounded font-mono text-[9px]">
+              <span class="w-1.5 h-1.5 bg-tertiary rounded-full"></span>
+              <span class="text-tertiary font-bold">RECHARGE // PAD 4</span>
+            </div>
+            <div class="absolute top-2 right-2 bg-surface-container-lowest/90 backdrop-blur-md px-2 py-0.5 rounded font-mono text-[9px] text-tertiary">DIRECTED EW</div>
+          </div>
+          <div class="p-3 flex flex-col gap-1 font-mono text-xs">
+            <h3 class="font-bold text-on-surface uppercase">VAJRA-EMP DISRUPTOR</h3>
+            <p class="text-[11px] text-on-surface-variant">Role: Non-kinetic counter-theft electronic warfare, motor kill-switch & GNSS jammer.</p>
+            <button class="w-full bg-tertiary/20 text-tertiary border border-tertiary/40 font-mono text-[10px] font-bold py-1.5 rounded hover:bg-tertiary/40 transition-all mt-1 flex items-center justify-center gap-1" onclick="deployFleetAsset('vajra')">
+              <span class="material-symbols-outlined text-[12px]">flash_on</span>
+              <span>DISCHARGE DIRECTED EMP PULSE</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Fleet Item 3: GARUDA FAST INTERCEPTOR -->
+        <div class="flex flex-col bg-surface-container rounded-lg overflow-hidden border border-surface-container-high shadow-md">
+          <div class="relative w-full h-36 bg-surface-container-lowest">
+            <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3wnd-VEa6nsdwUmFYe6_pKbRhRNWv_ei9zKRDKPFO7fCz2WuKNfHcn8xKsOniVtIGoHBYXzJpw94_ypk8cPqMCVxrFlzz-r-Tn23crYynNpgB1i3k2YfKlV6wru0DnF0Z8aMJAslFao_gH09HzvI9rVhd1-KhdYxOC44tj-zPLHwQ8IZEUnDJ6AXDrGTInUhQDhIhvyyVpp3H2yeGgbRvfeUAu7271QTWmiI5PRQ-bKN37M2tqX4k"/>
+            <div class="absolute inset-0 bg-gradient-to-t from-surface-container via-surface-container/30 to-transparent"></div>
+            <div class="absolute top-2 left-2 flex items-center gap-1 bg-surface-container-lowest/90 backdrop-blur-md px-2 py-0.5 rounded font-mono text-[9px]">
+              <span class="w-1.5 h-1.5 bg-primary rounded-full animate-ping"></span>
+              <span class="text-primary font-bold">FAST INTERCEPT // READY</span>
+            </div>
+            <div class="absolute top-2 right-2 bg-surface-container-lowest/90 backdrop-blur-md px-2 py-0.5 rounded font-mono text-[9px] text-primary">KINETIC NET</div>
+          </div>
+          <div class="p-3 flex flex-col gap-1 font-mono text-xs">
+            <h3 class="font-bold text-on-surface uppercase">GARUDA FAST INTERCEPTOR</h3>
+            <p class="text-[11px] text-on-surface-variant">Role: Dual pneumatic ballistic net deployment & high-speed kinetic intercept.</p>
+            <button class="w-full bg-primary/20 text-primary border border-primary/40 font-mono text-[10px] font-bold py-1.5 rounded hover:bg-primary/40 transition-all mt-1 flex items-center justify-center gap-1" onclick="deployFleetAsset('garuda')">
+              <span class="material-symbols-outlined text-[12px]">rocket_launch</span>
+              <span>SCRAMBLE BALLISTIC INTERCEPTOR</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Live RF Spectrum Canvas & Bayesian Fusion Banner -->
+      <div class="bg-surface-container-lowest rounded-md p-4 border border-surface-container-high shadow-xl flex flex-col gap-3 font-mono text-xs">
+        <div class="flex items-center justify-between border-b border-surface-container-high pb-2">
+          <span class="font-bold text-tertiary flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[18px]">graphic_eq</span>
+            GAP 2: LIVE RF SPECTRUM FFT & DIRECTIONAL JAMMER DENSITY ANALYZER
+          </span>
+          <span class="text-primary font-bold">BAYESIAN FUSION: 94.8% OPTIMAL</span>
+        </div>
+
+        <!-- Custom HTML5 Live Signal Spectrum Canvas -->
+        <div class="relative w-full h-48 bg-surface-container-lowest rounded border border-surface-container-high overflow-hidden">
+          <canvas id="rf-spectrum-canvas" class="w-full h-full"></canvas>
+          <div class="absolute top-2 left-2 text-[10px] text-tertiary">2.400 GHz - 2.500 GHz ISM BAND (REAL-TIME FFT)</div>
+          <div class="absolute top-2 right-2 text-[10px] text-secondary">JAMMING PEAK: 2.450 GHz @ +18.5 dBi</div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+          <div class="bg-surface-container p-3 rounded border border-surface-container-high">
+            <div class="text-[10px] text-on-surface-variant">RFVIEW PATH LOSS (FSPL)</div>
+            <div class="text-lg font-bold text-tertiary mt-1" id="rf-fspl">84.2 dB</div>
+          </div>
+          <div class="bg-surface-container p-3 rounded border border-surface-container-high">
+            <div class="text-[10px] text-on-surface-variant">GNSS PSEUDORANGE ERROR</div>
+            <div class="text-lg font-bold text-secondary mt-1" id="rf-gnss-error">±14.8M DRIFT</div>
+          </div>
+          <div class="bg-surface-container p-3 rounded border border-surface-container-high">
+            <div class="text-[10px] text-on-surface-variant">BAYESIAN FUSION CONFIDENCE</div>
+            <div class="text-lg font-bold text-primary mt-1" id="rf-fusion-conf">94.8%</div>
+          </div>
+          <div class="bg-surface-container p-3 rounded border border-surface-container-high">
+            <div class="text-[10px] text-on-surface-variant">SIGNAL-TO-JAMMING (SJNR)</div>
+            <div class="text-lg font-bold text-error mt-1" id="rf-sjnr">-4.2 dB (LINK DENIED)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Directional EW Jammer Controls -->
+      <div class="bg-surface-container rounded-md p-4 border border-surface-container-high shadow-xl flex flex-col gap-4 font-mono text-xs">
+        <div class="flex items-center justify-between border-b border-surface-container-high pb-2">
+          <span class="font-bold text-primary">RF PROPAGATION & JAMMER PARAMETER CONTROLS</span>
+          <span class="text-secondary font-bold" id="ew-status-label">EMITTER: ACTIVE</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="flex flex-col gap-3">
+            <div>
+              <div class="flex justify-between text-[11px] text-on-surface-variant mb-1">
+                <span>JAMMER POWER OUTPUT (WATTS):</span>
+                <span class="text-primary font-bold" id="val-power">150 W</span>
+              </div>
+              <input class="w-full accent-primary" id="slider-power" max="500" min="10" oninput="updateEWParam()" type="range" value="150"/>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-[11px] text-on-surface-variant mb-1">
+                <span>CENTER FREQUENCY (MHz):</span>
+                <span class="text-tertiary font-bold" id="val-freq">2400 MHz (2.4 GHz ISM)</span>
+              </div>
+              <input class="w-full accent-tertiary" id="slider-freq" max="5800" min="900" oninput="updateEWParam()" step="100" type="range" value="2400"/>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-[11px] text-on-surface-variant mb-1">
+                <span>ANTENNA BEAMWIDTH (DEGREES):</span>
+                <span class="text-secondary font-bold" id="val-beam">35° (HIGH-GAIN HORN)</span>
+              </div>
+              <input class="w-full accent-secondary" id="slider-beam" max="120" min="15" oninput="updateEWParam()" type="range" value="35"/>
+            </div>
+          </div>
+
+          <div class="bg-surface-container-lowest p-3 rounded border border-surface-container-high flex flex-col gap-2">
+            <div class="text-tertiary font-bold">PROPAGATION & DIRECTIONAL GAIN</div>
+            <div class="grid grid-cols-2 gap-2 text-[11px]">
+              <div>DIRECTIONAL GAIN G(θ): <span class="text-on-surface font-bold" id="rf-gain">+18.5 dBi</span></div>
+              <div>TERRAIN MASKING LOSS: <span class="text-on-surface font-bold" id="rf-los">0.0 dB (CLEAR LOS)</span></div>
+            </div>
+            <button class="w-full bg-primary text-on-primary font-mono text-xs font-bold py-2 rounded mt-2 shadow hover:bg-primary-container transition-all" onclick="applyEWBroadcast()">BROADCAST RF JAMMING WAVEFRONT</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: GAP 3 COGNITIVE LOAD & DYNAMIC TRIAGE SCORING GRAPH -->
+    <section class="tab-content flex-col gap-4" id="tab-triage">
+      
+      <!-- Cognitive Workload & Stress Tracker Card -->
+      <div class="bg-surface-container rounded-md p-4 border border-surface-container-high shadow-xl flex flex-col gap-3">
+        <div class="flex items-center justify-between font-mono text-xs border-b border-surface-container-high pb-2">
+          <span class="font-bold text-secondary flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[18px]">favorite</span>
+            GAP 3: COGNITIVE WORKLOAD (NASA-TLX) & PHYSIOLOGICAL SENSOR MATRIX (HRV / EYE-TRACKING)
+          </span>
+          <span class="text-error font-bold" id="cognitive-overload-label">COGNITIVE OVERLOAD: 28% (NORMAL)</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-3 font-mono text-xs">
+          <div class="bg-surface-container-lowest p-3 rounded border border-surface-container-high">
+            <div class="text-[10px] text-on-surface-variant">NASA-TLX INDEX</div>
+            <div class="text-xl font-bold text-tertiary mt-1" id="cog-nasa-tlx">32.4 / 100</div>
+          </div>
+          <div class="bg-surface-container-lowest p-3 rounded border border-surface-container-high">
+            <div class="text-[10px] text-on-surface-variant">HEART RATE VARIABILITY (HRV STRESS)</div>
+            <div class="text-xl font-bold text-primary mt-1" id="cog-hrv">68ms (STABLE)</div>
+          </div>
+          <div class="bg-surface-container-lowest p-3 rounded border border-surface-container-high">
+            <div class="text-[10px] text-on-surface-variant">PUPIL DILATION / EYE-TRACK FOCUS</div>
+            <div class="text-xl font-bold text-secondary mt-1" id="cog-eye">3.8mm (TARGET LOCKED)</div>
+          </div>
+          <div class="bg-surface-container-lowest p-3 rounded border border-surface-container-high">
+            <div class="text-[10px] text-on-surface-variant">OUT-OF-SEQUENCE PENALTY</div>
+            <div class="text-xl font-bold text-error mt-1" id="cog-penalty">-0 PTS (OPTIMAL)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Triage Queue Table -->
+      <div class="bg-surface-container rounded-md p-4 border border-surface-container-high shadow-xl flex flex-col gap-3">
+        <div class="font-mono text-xs font-bold text-on-surface">DYNAMIC DECISION-TREE TRIAGE QUEUE (50+ DRONE SATURATION ATTACK)</div>
+        <div class="overflow-x-auto">
+          <table class="w-full font-mono text-xs text-left border-collapse">
+            <thead>
+              <tr class="bg-surface-container-high text-on-surface-variant border-b border-surface-container-high">
+                <th class="p-2">TARGET ID</th>
+                <th class="p-2">TYPE</th>
+                <th class="p-2">RANGE</th>
+                <th class="p-2">CLOSING SPEED</th>
+                <th class="p-2">TRIAGE THREAT SCORE</th>
+                <th class="p-2">ACTION</th>
+              </tr>
+            </thead>
+            <tbody id="triage-table-body">
+              <!-- Populated via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- TAB 4: GAP 4 ANTI-ROTE-LEARNING AI SCENARIO DIRECTOR -->
+    <section class="tab-content flex-col gap-4" id="tab-director">
+      
+      <div class="bg-surface-container rounded-md p-4 border border-surface-container-high shadow-xl flex flex-col gap-4 font-mono text-xs">
+        <div class="flex items-center justify-between border-b border-surface-container-high pb-2">
+          <span class="font-bold text-tertiary flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[18px]">psychology</span>
+            GAP 4: ANTI-ROTE-LEARNING AI SCENARIO DIRECTOR & SELF-PLAY RL TACTICS GENERATOR
+          </span>
+          <span class="text-primary font-bold">STATE: PROCEDURAL ADAPTING</span>
+        </div>
+
+        <p class="text-on-surface-variant">
+          Implements a Left-4-Dead style AI Scenario Director enforcing physical flight constraints (6G ceilings, pitch/roll limiters) while procedurally generating non-repetitive adversarial tactics using Reinforcement Learning self-play.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div class="bg-surface-container-lowest p-3 rounded border border-surface-container-high">
+            <div class="text-[10px] text-on-surface-variant">ADVERSARIAL DOCTRINE</div>
+            <div class="text-base font-bold text-secondary mt-1">HIGH-LOW SPLIT & SATURATION SCREEN</div>
+          </div>
+          <div class="bg-surface-container-lowest p-3 rounded border border-surface-container-high">
+            <div class="text-[10px] text-on-surface-variant">PHYSICAL FLIGHT CONSTRAINTS</div>
+            <div class="text-base font-bold text-primary mt-1">MAX 6G // 270°/S TURN CAP</div>
+          </div>
+          <div class="bg-surface-container-lowest p-3 rounded border border-surface-container-high">
+            <div class="text-[10px] text-on-surface-variant">TERRAIN CONSTRAINTS</div>
+            <div class="text-base font-bold text-tertiary mt-1">NAVMESH MASKED CONTOURS</div>
+          </div>
+        </div>
+
+        <!-- Scenario Presets -->
+        <div class="flex flex-wrap gap-2 pt-1">
+          <button class="bg-surface-container-high hover:bg-primary/20 text-primary px-3 py-1.5 rounded border border-primary/30 font-bold flex items-center gap-1 text-[11px]" onclick="regenerateProceduralScenario('saturation')">
+            <span class="material-symbols-outlined text-[14px]">grid_4x4</span>
+            <span>50+ SWARM SATURATION</span>
+          </button>
+          <button class="bg-surface-container-high hover:bg-secondary/20 text-secondary px-3 py-1.5 rounded border border-secondary/30 font-bold flex items-center gap-1 text-[11px]" onclick="regenerateProceduralScenario('night')">
+            <span class="material-symbols-outlined text-[14px]">dark_mode</span>
+            <span>NIGHT STEALTH INFILTRATION</span>
+          </button>
+          <button class="bg-surface-container-high hover:bg-tertiary/20 text-tertiary px-3 py-1.5 rounded border border-tertiary/30 font-bold flex items-center gap-1 text-[11px]" onclick="regenerateProceduralScenario('blizzard')">
+            <span class="material-symbols-outlined text-[14px]">ac_unit</span>
+            <span>HIGH-ALTITUDE BLIZZARD</span>
+          </button>
+        </div>
+
+        <button class="w-full bg-tertiary text-on-tertiary-container py-3 rounded font-bold shadow-lg hover:bg-tertiary-container transition-all uppercase flex items-center justify-center gap-2" onclick="regenerateProceduralScenario('random')">
+          <span class="material-symbols-outlined text-[18px]">autorenew</span>
+          <span>RE-GENERATE PROCEDURAL THREAT SCENARIO (PREVENT ROTE LEARNING)</span>
+        </button>
+      </div>
+
+    </section>
+
+    <!-- TAB 5: GAP 5 INTEGRATED END-TO-END PIPELINE & AAR ANALYTICS -->
+    <section class="tab-content flex-col gap-4" id="tab-aar">
+      
+      <div class="bg-surface-container rounded-md p-4 border border-surface-container-high shadow-xl flex flex-col gap-4">
+        <div class="flex items-center justify-between font-mono text-xs border-b border-surface-container-high pb-2">
+          <span class="font-bold text-tertiary flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[18px]">analytics</span>
+            GAP 5: INTEGRATED END-TO-END PIPELINE & AFTER-ACTION REVIEW (AAR) BACKEND
+          </span>
+          <span class="text-primary font-bold" id="aar-grade-label">OFFICER GRADE: CLASS-S EXCELLENT</span>
+        </div>
+
+        <!-- Top Metrics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-3 font-mono text-xs">
+          <div class="bg-surface-container-lowest p-3 rounded border border-surface-container-high">
+            <div class="text-[10px] text-on-surface-variant">MEAN TIME TO DETECTION (MTTD)</div>
+            <div class="text-xl font-bold text-primary mt-1" id="aar-mttd">1.42 SEC</div>
+          </div>
+          <div class="bg-surface-container-lowest p-3 rounded border border-surface-container-high">
+            <div class="text-[10px] text-on-surface-variant">MEAN TIME TO NEUTRALIZATION (MTTN)</div>
+            <div class="text-xl font-bold text-tertiary mt-1" id="aar-mttn">3.85 SEC</div>
+          </div>
+          <div class="bg-surface-container-lowest p-3 rounded border border-surface-container-high">
+            <div class="text-[10px] text-on-surface-variant">TARGET DISCRIMINATION INDEX (TDI)</div>
+            <div class="text-xl font-bold text-secondary mt-1" id="aar-tdi">92.4%</div>
+          </div>
+          <div class="bg-surface-container-lowest p-3 rounded border border-surface-container-high">
+            <div class="text-[10px] text-on-surface-variant">DECOY AMMUNITION WASTED</div>
+            <div class="text-xl font-bold text-error mt-1" id="aar-decoys-wasted">1 UNIT (15 PTS)</div>
+          </div>
+        </div>
+
+        <!-- Confusion Matrix Section -->
+        <div class="bg-surface-container-lowest p-4 rounded border border-surface-container-high flex flex-col gap-2 font-mono text-xs">
+          <div class="font-bold text-on-surface">THREAT CLASSIFICATION CONFUSION MATRIX</div>
+          <div class="grid grid-cols-2 gap-3 text-center pt-2">
+            <div class="bg-primary-container/20 border border-primary/40 p-3 rounded text-primary">
+              <div class="text-[10px] uppercase">TRUE POSITIVES (KINETIC INTERCEPTS)</div>
+              <div class="text-2xl font-bold mt-1" id="aar-tp">8</div>
+            </div>
+            <div class="bg-error-container/20 border border-error/40 p-3 rounded text-error">
+              <div class="text-[10px] uppercase">FALSE POSITIVES (DECOYS WASTED)</div>
+              <div class="text-2xl font-bold mt-1" id="aar-fp">1</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Session Engagement Telemetry Event Log -->
+        <div class="bg-surface-container-lowest p-4 rounded border border-surface-container-high flex flex-col gap-3 font-mono text-xs">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-tertiary flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-[16px]">receipt_long</span>
+              LIVE TELEMETRY ENGAGEMENT LOG (SQLITE AUDIT PERSISTED)
+            </span>
+            <span class="text-[10px] text-on-surface-variant" id="aar-log-count-label">0 EVENTS LOGGED</span>
+          </div>
+          <div class="overflow-x-auto max-h-[200px] overflow-y-auto">
+            <table class="w-full text-left border-collapse font-mono text-[11px]">
+              <thead>
+                <tr class="bg-surface-container-high text-on-surface-variant border-b border-surface-container-high">
+                  <th class="p-2">T-STAMP</th>
+                  <th class="p-2">TARGET ID</th>
+                  <th class="p-2">WEAPON / COUNTERMEASURE</th>
+                  <th class="p-2">ACTUAL CLASS</th>
+                  <th class="p-2">ROE EVALUATION</th>
+                  <th class="p-2">DELTA SCORE</th>
+                </tr>
+              </thead>
+              <tbody id="aar-engagement-log-body">
+                <!-- Dynamically populated via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Export & Defense Assessment Scorecard -->
+        <div class="flex gap-3 font-mono text-xs pt-2 no-print">
+          <button class="flex-1 bg-surface-container-high text-on-surface py-2.5 rounded border border-surface-container-highest hover:bg-surface-bright transition-all" onclick="exportTelemetryJSON()">EXPORT TELEMETRY SESSION (JSON)</button>
+          <button class="flex-1 bg-secondary text-on-secondary py-2.5 rounded font-bold hover:bg-secondary-container transition-all" onclick="printDefenseScorecard()">
+            <span class="material-symbols-outlined text-[14px] align-middle">print</span>
+            PRINT DEFENSE ASSESSMENT SCORECARD
+          </button>
+          <button class="flex-1 bg-primary text-on-primary py-2.5 rounded font-bold hover:bg-primary-container transition-all" onclick="exportSQLiteDB()">EXPORT SQLITE DATABASE (.DB)</button>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- TOAST NOTIFICATION MODAL -->
+  <div class="fixed inset-x-4 bottom-20 bg-surface-container-highest text-on-surface p-3 rounded shadow-2xl transition-all duration-300 transform translate-y-24 opacity-0 pointer-events-none flex items-center justify-between z-50 max-w-md mx-auto border border-surface-container-high" id="toast-modal">
+    <div class="flex items-center gap-2 min-w-0 font-mono text-xs">
+      <span class="material-symbols-outlined text-primary text-[20px]" id="toast-icon">check_circle</span>
+      <span class="truncate" id="toast-msg">COMMAND DIRECTIVE EXECUTED</span>
+    </div>
+    <span class="font-mono text-[9px] text-tertiary">ACK 200</span>
+  </div>
+
+  <!-- BOTTOM QUICK NAV BAR -->
+  <nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface-container-lowest/95 backdrop-blur-xl border-t border-surface-container-high font-mono text-[10px] no-print">
+    <div class="flex justify-around items-center h-14 px-2">
+      <button class="flex flex-col items-center justify-center gap-0.5 min-w-[65px] h-11 rounded transition-colors text-primary" onclick="switchTab('radar')">
+        <span class="material-symbols-outlined text-[18px]">radar</span>
+        <span class="uppercase">Surveillance</span>
+      </button>
+      <button class="flex flex-col items-center justify-center gap-0.5 min-w-[65px] h-11 rounded text-on-surface-variant hover:text-on-surface transition-colors" onclick="switchTab('sensors')">
+        <span class="material-symbols-outlined text-[18px]">graphic_eq</span>
+        <span class="uppercase">RF Spectrum</span>
+      </button>
+      <button class="flex flex-col items-center justify-center gap-0.5 min-w-[65px] h-11 rounded text-on-surface-variant hover:text-on-surface transition-colors" onclick="switchTab('triage')">
+        <span class="material-symbols-outlined text-[18px]">alt_route</span>
+        <span class="uppercase">Triage & Load</span>
+      </button>
+      <button class="flex flex-col items-center justify-center gap-0.5 min-w-[65px] h-11 rounded text-on-surface-variant hover:text-on-surface transition-colors" onclick="switchTab('director')">
+        <span class="material-symbols-outlined text-[18px]">psychology</span>
+        <span class="uppercase">AI Director</span>
+      </button>
+      <button class="flex flex-col items-center justify-center gap-0.5 min-w-[65px] h-11 rounded text-on-surface-variant hover:text-on-surface transition-colors" onclick="switchTab('aar')">
+        <span class="material-symbols-outlined text-[18px]">analytics</span>
+        <span class="uppercase">Pipeline AAR</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- AI CHAT ASSISTANT SLIDE-OUT DRAWER -->
+  <div id="ai-chat-drawer" class="fixed inset-y-0 right-0 w-full max-w-md bg-surface-container-lowest/95 backdrop-blur-2xl border-l border-surface-container-high shadow-2xl z-[60] transform translate-x-full transition-transform duration-300 flex flex-col font-mono text-xs">
+    
+    <!-- Drawer Header -->
+    <div class="p-3 bg-surface-container border-b border-surface-container-high flex items-center justify-between">
+      <div class="flex items-center gap-2 text-tertiary">
+        <span class="material-symbols-outlined text-[22px]">smart_toy</span>
+        <div>
+          <span class="font-bold text-on-surface text-sm uppercase block">AEGIS AI TACTICAL INSTRUCTOR</span>
+          <span class="text-[9px] text-tertiary">CONTEXT-AWARE C2 EXPLAINER</span>
+        </div>
+      </div>
+      <button class="text-on-surface-variant hover:text-on-surface p-1 rounded" onclick="toggleAIChatDrawer()">
+        <span class="material-symbols-outlined text-[20px]">close</span>
+      </button>
+    </div>
+
+    <!-- Mode Selector Pills (First-Time / Beginner vs Defense / Military Commander) -->
+    <div class="p-2 bg-surface-container-low border-b border-surface-container-high flex gap-1">
+      <button id="persona-btn-beginner" class="flex-1 py-1.5 px-2 rounded font-bold text-[10px] transition-all bg-tertiary text-on-tertiary-container shadow" onclick="setChatPersona('beginner')">
+        <span>🔰 1ST-TIME OPERATOR MODE</span>
+      </button>
+      <button id="persona-btn-defense" class="flex-1 py-1.5 px-2 rounded font-bold text-[10px] transition-all text-on-surface-variant hover:text-on-surface" onclick="setChatPersona('defense')">
+        <span>⚔️ DEFENSE COMMANDER MODE</span>
+      </button>
+    </div>
+
+    <!-- Quick Question Chips -->
+    <div class="p-2 bg-surface-container-lowest border-b border-surface-container-high flex gap-1.5 overflow-x-auto whitespace-nowrap text-[10px]">
+      <button class="bg-surface-container px-2 py-1 rounded border border-surface-container-high hover:border-tertiary text-tertiary" onclick="sendQuickPrompt('How do I operate this console step-by-step for the first time?')">
+        <span>How to operate console?</span>
+      </button>
+      <button class="bg-surface-container px-2 py-1 rounded border border-surface-container-high hover:border-tertiary text-secondary" onclick="sendQuickPrompt('What is the difference between Soft-Kill RF Jamming and Hard-Kill Kinetic Interceptor?')">
+        <span>Soft-Kill vs Hard-Kill</span>
+      </button>
+      <button class="bg-surface-container px-2 py-1 rounded border border-surface-container-high hover:border-tertiary text-primary" onclick="sendQuickPrompt('Explain RF Jamming FSPL Path Loss and Signal-to-Jamming Noise Ratio')">
+        <span>RF FSPL Physics</span>
+      </button>
+      <button class="bg-surface-container px-2 py-1 rounded border border-surface-container-high hover:border-tertiary text-error" onclick="sendQuickPrompt('What are the Rules of Engagement (ROE) for non-lethal decoys?')">
+        <span>ROE & Decoy Rules</span>
+      </button>
+    </div>
+
+    <!-- Chat Messages Scroll Area -->
+    <div class="flex-1 p-3 overflow-y-auto flex flex-col gap-3" id="ai-chat-messages">
+      <!-- Populated via JS -->
+    </div>
+
+    <!-- Chat Input Area -->
+    <div class="p-3 bg-surface-container border-t border-surface-container-high flex gap-2">
+      <input type="text" id="ai-chat-input" class="flex-1 bg-surface-container-lowest text-on-surface px-3 py-2 rounded border border-surface-container-high focus:border-tertiary outline-none font-mono text-xs placeholder:text-on-surface-variant" placeholder="Ask AI Instructor anything about operating this system..." onkeydown="if(event.key==='Enter') sendAIChatMessage()"/>
+      <button class="bg-tertiary text-on-tertiary-container px-3.5 py-2 rounded font-bold hover:bg-tertiary-container transition-all flex items-center justify-center" onclick="sendAIChatMessage()">
+        <span class="material-symbols-outlined text-[18px]">send</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- FLOATING AI ASSISTANT LAUNCHER BUTTON -->
+  <button class="fixed bottom-16 right-4 z-40 bg-tertiary text-on-tertiary-container px-3.5 py-2.5 rounded-full shadow-2xl font-mono text-xs font-bold flex items-center gap-2 border border-tertiary/50 hover:scale-105 active:scale-95 transition-all animate-bounce" onclick="toggleAIChatDrawer()">
+    <span class="material-symbols-outlined text-[20px]">smart_toy</span>
+    <span>AI INSTRUCTOR & EXPLAINER</span>
+  </button>
+
+  <!-- JAVASCRIPT APP CONNECTOR -->
+  <script src="/src/app.js"></script>
+</body>
+</html>
