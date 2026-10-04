@@ -2,8 +2,5 @@ services:
   - type: web
     name: aegis-cuas-drone-simulator
     env: python
-    buildCommand: ""
-    startCommand: python server.py
-    envVars:
-      - key: PORT
-        value: 10000
+    buildCommand: "pip install --upgrade pip"
+    startCommand: "python server.py"

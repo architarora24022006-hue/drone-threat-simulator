@@ -430,9 +430,12 @@ class AegisServerHandler(http.server.SimpleHTTPRequestHandler):
             "targets": targets
         }
 
+class ThreadedHTTPServer(http.server.HTTPServer):
+    allow_reuse_address = True
+
 if __name__ == '__main__':
     init_db()
-    socketserver.TCPServer.allow_reuse_address = True
-    with socketserver.TCPServer(("", PORT), AegisServerHandler) as httpd:
-        print(f"[SERVER] AEGIS-CUAS Live Backend v2.5 running on http://localhost:{PORT}")
-        httpd.serve_forever()
+    server_address = ('0.0.0.0', PORT)
+    httpd = ThreadedHTTPServer(server_address, AegisServerHandler)
+    print(f"[SERVER] AEGIS-CUAS Live Backend v2.5 running on http://0.0.0.0:{PORT}")
+    httpd.serve_forever()
