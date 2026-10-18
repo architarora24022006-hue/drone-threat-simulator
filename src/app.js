@@ -203,7 +203,7 @@ function triggerToast(text, icon = 'check_circle', iconColor = 'text-primary') {
   }, 2800);
 }
 
-// Tab Switcher Logic
+// Tab Switcher Logic (All 6 Tactical Modules)
 function switchTab(tabId) {
   playTacticalAudio('click');
   activeTab = tabId;
@@ -216,7 +216,20 @@ function switchTab(tabId) {
   if (targetTab) targetTab.classList.add('active');
   if (targetBtn) targetBtn.classList.add('active');
 
-  if (tabId === 'sensors') {
+  // Bottom quick-nav synchronization
+  document.querySelectorAll('[id^="quick-btn-"]').forEach(btn => {
+    btn.classList.remove('text-primary');
+    btn.classList.add('text-on-surface-variant');
+  });
+  const quickBtn = document.getElementById(`quick-btn-${tabId}`);
+  if (quickBtn) {
+    quickBtn.classList.remove('text-on-surface-variant');
+    quickBtn.classList.add('text-primary');
+  }
+
+  if (tabId === 'fpv') {
+    syncFPVTargetHUD();
+  } else if (tabId === 'sensors') {
     setTimeout(renderRFSpectrumCanvas, 100);
   } else if (tabId === 'aar') {
     renderAAREngagementLog();
@@ -422,18 +435,45 @@ function selectDrone(droneId) {
   const threatEl = document.getElementById('tgt-threat-score');
   const closingEl = document.getElementById('tgt-closing');
 
+  const rangeM = Math.round(Math.sqrt(drone.x * drone.x + drone.y * drone.y));
+
   if (lockIdEl) lockIdEl.innerText = `LOCK: ${drone.id}`;
   if (classEl) classEl.innerText = `CLASSIFICATION: ${drone.type.toUpperCase()}`;
-  if (rangeEl) rangeEl.innerText = `${Math.round(Math.sqrt(drone.x * drone.x + drone.y * drone.y))}M`;
+  if (rangeEl) rangeEl.innerText = `${rangeM}M`;
   if (speedEl) speedEl.innerText = `${drone.speed.toFixed(1)} M/S`;
   if (altEl) altEl.innerText = `${drone.alt.toFixed(1)}M AGL`;
   if (threatEl) threatEl.innerText = `${drone.threat.toFixed(1)} / 100`;
   if (closingEl) closingEl.innerText = `+${(drone.speed * 0.9).toFixed(1)} M/S`;
 
+  syncFPVTargetHUD(drone);
+
   fetchAITacticalAdvice(drone);
   renderSwarmTargets();
   renderSwarmTargetQueue();
   triggerToast(`TARGET LOCK ACQUIRED: ${drone.id}`, 'crosshair', 'text-tertiary');
+}
+
+function syncFPVTargetHUD(targetDrone) {
+  const drone = targetDrone || activeDrones.find(d => d.id === selectedDroneId) || activeDrones.find(d => d.active);
+  if (!drone) return;
+
+  const rangeM = Math.round(Math.sqrt(drone.x * drone.x + drone.y * drone.y));
+  const fpvDroneId = document.getElementById('fpv-reticle-drone-id');
+  const fpvReticleRange = document.getElementById('fpv-reticle-range');
+  const fpvSummaryRange = document.getElementById('fpv-summary-range');
+  const fpvSpeedVal = document.getElementById('fpv-speed-val');
+  const fpvAltVal = document.getElementById('fpv-alt-val');
+  const fpvTitle = document.getElementById('fpv-reticle-target-title');
+
+  if (fpvDroneId) fpvDroneId.innerText = drone.id;
+  if (fpvReticleRange) fpvReticleRange.innerText = `RNG: ${rangeM}M // CLOSING`;
+  if (fpvSummaryRange) fpvSummaryRange.innerText = `${rangeM}.0 M`;
+  if (fpvSpeedVal) fpvSpeedVal.innerText = `${Math.round(drone.speed * 3.6)}`;
+  if (fpvAltVal) fpvAltVal.innerText = `${Math.round(drone.alt)}M`;
+  if (fpvTitle) {
+    fpvTitle.innerText = `TARGET LOCKED [${drone.id}]`;
+    fpvTitle.className = drone.isDecoy ? 'text-[9px] font-bold text-secondary uppercase tracking-wider' : 'text-[9px] font-bold text-error uppercase tracking-wider';
+  }
 }
 
 // AI Tactical Threat Recommendation Engine
@@ -1051,6 +1091,259 @@ function exportSQLiteDB() {
   playTacticalAudio('click');
   saveSessionToSQLite();
   triggerToast("SQLITE DATABASE ARCHIVE PERSISTED AT aegis_cuas.db", "database", "text-primary");
+}
+
+// ============================================================================
+// STITCH SCREEN 2: DRONE FPV COCKPIT INTERACTIVE ENGINE
+// ============================================================================
+let selectedFPVWeapon = 'net'; // 'net' | 'emp' | 'ram'
+let isFLIROn = false;
+
+function selectFPVWeapon(weaponType) {
+  playTacticalAudio('click');
+  selectedFPVWeapon = weaponType;
+
+  const cards = document.querySelectorAll('#fpv-weapon-group .weapon-card');
+  cards.forEach(card => {
+    card.classList.remove('active', 'border-primary', 'border-tertiary', 'border-secondary');
+    card.classList.add('border-surface-container-high');
+    const badge = card.querySelector('span:last-child');
+    if (card.dataset.weapon === weaponType) {
+      card.classList.add('active');
+      card.classList.remove('border-surface-container-high');
+      if (weaponType === 'net') {
+        card.classList.add('border-primary');
+        if (badge) { badge.className = 'bg-primary/20 text-primary px-1.5 py-0.5 rounded text-[9px] font-bold'; badge.innerText = 'ARMED & READY'; }
+      } else if (weaponType === 'emp') {
+        card.classList.add('border-tertiary');
+        if (badge) { badge.className = 'bg-tertiary/20 text-tertiary px-1.5 py-0.5 rounded text-[9px] font-bold'; badge.innerText = 'CAP 100% ARMED'; }
+      } else if (weaponType === 'ram') {
+        card.classList.add('border-secondary');
+        if (badge) { badge.className = 'bg-secondary/20 text-secondary px-1.5 py-0.5 rounded text-[9px] font-bold'; badge.innerText = 'IMPACT LOCKED'; }
+      }
+    } else {
+      if (badge && card.dataset.weapon === 'net') badge.innerText = 'STANDBY';
+      if (badge && card.dataset.weapon === 'emp') badge.innerText = 'CAP 100%';
+      if (badge && card.dataset.weapon === 'ram') badge.innerText = 'VEC LOCK';
+    }
+  });
+
+  const btnText = document.getElementById('fpv-btn-text');
+  const btn = document.getElementById('fpv-intercept-btn');
+  if (btnText && btn) {
+    if (weaponType === 'net') {
+      btnText.innerText = 'FIRE NET CAPTURE & RECOVER';
+      btn.className = 'relative w-full bg-primary text-on-primary rounded-lg flex items-center justify-center gap-2 font-bold text-sm tracking-wider shadow-xl overflow-hidden uppercase active:scale-[0.98] transition-all py-4 border border-primary/50';
+    } else if (weaponType === 'emp') {
+      btnText.innerText = 'DISCHARGE DIRECTED RF EMP BURST';
+      btn.className = 'relative w-full bg-tertiary text-on-tertiary-container rounded-lg flex items-center justify-center gap-2 font-bold text-sm tracking-wider shadow-xl overflow-hidden uppercase active:scale-[0.98] transition-all py-4 border border-tertiary/50';
+    } else if (weaponType === 'ram') {
+      btnText.innerText = 'EXECUTE KINETIC HARD-KILL RAM';
+      btn.className = 'relative w-full bg-error text-on-error rounded-lg flex items-center justify-center gap-2 font-bold text-sm tracking-wider shadow-xl overflow-hidden uppercase active:scale-[0.98] transition-all py-4 border border-error/50';
+    }
+  }
+
+  triggerToast(`FPV ARMAMENT SELECTED: ${weaponType.toUpperCase()}`, 'military_tech', weaponType === 'net' ? 'text-primary' : (weaponType === 'emp' ? 'text-tertiary' : 'text-error'));
+}
+
+function toggleFLIRMode() {
+  playTacticalAudio('click');
+  isFLIROn = !isFLIROn;
+  const bg = document.getElementById('fpv-viewport-bg');
+  const label = document.getElementById('flir-status-label');
+  const btn = document.getElementById('flir-toggle-btn');
+
+  if (bg) {
+    if (isFLIROn) {
+      bg.style.filter = 'grayscale(100%) invert(100%) contrast(220%) brightness(120%)';
+      bg.style.mixBlendMode = 'luminosity';
+    } else {
+      bg.style.filter = 'none';
+      bg.style.mixBlendMode = 'screen';
+    }
+  }
+
+  if (label) {
+    label.innerText = isFLIROn ? 'FLIR: ON (WHITE-HOT)' : 'FLIR: OFF';
+    label.className = isFLIROn ? 'text-[11px] text-primary font-bold leading-tight' : 'text-[11px] text-tertiary font-bold leading-tight';
+  }
+
+  if (btn) {
+    if (isFLIROn) {
+      btn.classList.add('border-primary', 'bg-primary/10');
+    } else {
+      btn.classList.remove('border-primary', 'bg-primary/10');
+    }
+  }
+
+  triggerToast(isFLIROn ? 'FLIR THERMAL IMAGING ACTIVE: WHITE-HOT HIGH GAIN' : 'FLIR THERMAL IMAGING STANDBY (OPTICAL EO MODE)', 'thermostat', 'text-tertiary');
+}
+
+function jiggleFlightStick() {
+  playTacticalAudio('click');
+  const thumb = document.getElementById('stick-thumb');
+  const coords = document.getElementById('stick-coords');
+  const pitchLadder = document.getElementById('fpv-pitch-ladder');
+  const compassTape = document.getElementById('fpv-compass-tape');
+
+  const randX = (Math.random() - 0.5) * 24;
+  const randY = (Math.random() - 0.5) * 24;
+
+  if (thumb) {
+    thumb.style.transform = `translate(${randX.toFixed(1)}px, ${randY.toFixed(1)}px)`;
+    setTimeout(() => {
+      thumb.style.transform = 'translate(0px, 0px)';
+    }, 450);
+  }
+
+  const normX = (randX / 24).toFixed(2);
+  const normY = (randY / 24).toFixed(2);
+  if (coords) coords.innerText = `X: ${normX >= 0 ? '+' : ''}${normX} | Y: ${normY >= 0 ? '+' : ''}${normY}`;
+
+  if (pitchLadder) {
+    pitchLadder.style.transform = `rotate(${randX * 0.8}deg) translateY(${randY * 0.5}px)`;
+    setTimeout(() => { pitchLadder.style.transform = 'none'; }, 500);
+  }
+
+  if (compassTape) {
+    const heading = Math.round(48 + randX * 0.6);
+    const middleSpan = compassTape.querySelector('span:nth-child(3)');
+    if (middleSpan) middleSpan.innerText = `${String(heading).padStart(3, '0')}° NE`;
+  }
+}
+
+function executeFPVIntercept() {
+  const target = activeDrones.find(d => d.id === selectedDroneId && d.active) ||
+                 activeDrones.find(d => d.active && !d.isDecoy) ||
+                 activeDrones.find(d => d.active);
+
+  if (!target) {
+    triggerToast('ALL AIRSPACE TARGETS ALREADY NEUTRALIZED', 'task_alt', 'text-primary');
+    return;
+  }
+
+  selectedDroneId = target.id;
+  const mode = selectedFPVWeapon === 'emp' ? 'jam' : 'kinetic';
+
+  // Animate FPV target box impact
+  const targetBox = document.getElementById('fpv-target-box');
+  const targetTitle = document.getElementById('fpv-reticle-target-title');
+  const rangeEl = document.getElementById('fpv-reticle-range');
+
+  if (targetTitle) {
+    targetTitle.innerText = 'IMPACT // TARGET CAPTURED';
+    targetTitle.className = 'text-[9px] font-bold text-primary uppercase tracking-wider';
+  }
+  if (rangeEl) rangeEl.innerText = 'RNG: 0.0M // INTERCEPTED';
+
+  if (targetBox) {
+    targetBox.classList.add('scale-125', 'opacity-80');
+    setTimeout(() => {
+      targetBox.classList.remove('scale-125');
+    }, 300);
+  }
+
+  executeQuickEngage(mode);
+
+  const weaponName = selectedFPVWeapon === 'net' ? 'PNEUMATIC NET GUN' : (selectedFPVWeapon === 'emp' ? 'DIRECTED RF EMP BURST' : 'KINETIC HARD-KILL RAM');
+  triggerToast(`FPV COCKPIT: ${weaponName} DEPLOYED ON ${target.id}! RECOVERED FOB PAYLOAD.`, 'verified', 'text-primary');
+}
+
+// ============================================================================
+// STITCH SCREEN 4: FORENSIC THREAT MATRIX & DOSSIER ENGINE
+// ============================================================================
+function filterIncidents(category) {
+  playTacticalAudio('click');
+  const filterBtns = document.querySelectorAll('#tactical-filter-rail .filter-btn');
+  filterBtns.forEach(btn => {
+    if (btn.dataset.filter === category) {
+      btn.className = 'filter-btn active flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary text-on-primary font-bold uppercase whitespace-nowrap shadow-sm transition-all';
+    } else {
+      btn.className = 'filter-btn flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-container text-on-surface-variant hover:text-on-surface font-semibold uppercase whitespace-nowrap transition-all border border-surface-container-high';
+    }
+  });
+
+  const cards = document.querySelectorAll('#incidents-container .incident-card');
+  let visibleCount = 0;
+  cards.forEach(card => {
+    const cardCat = card.dataset.category;
+    if (category === 'all' || cardCat === category) {
+      card.style.display = 'flex';
+      visibleCount++;
+    } else {
+      card.style.display = 'none';
+    }
+  });
+
+  triggerToast(`FORENSIC INCIDENT FILTER: ${category.toUpperCase()} (${visibleCount} SHOWN)`, 'filter_alt', 'text-tertiary');
+}
+
+function exportEncryptedReport() {
+  playTacticalAudio('lock');
+  const timestamp = new Date().toISOString();
+  const shaHash = "9B4F81A72C83D4E51F60B8E193C2A4F8E7D1C0B3A5F6E4D2C1B0A9F8E7D6C5B4A3F2E1D0C9B8A7F6E5D4C3B2A1F0";
+
+  const totalFired = truePositivesCount + falsePositivesCount;
+  const tdi = totalFired > 0 ? ((truePositivesCount / totalFired) * 100).toFixed(1) : "100.0";
+
+  const reportContent = `================================================================================
+GARUDA-RAKSHAK // AEGIS C-UAS TACTICAL COMMAND CONSOLE
+FORENSIC THREAT MATRIX INCIDENT DOSSIER // DISA-CERT-884
+MIL-STD-2525D CLASSIFIED AFTER-ACTION DEFENSE ARCHIVE
+================================================================================
+
+DATE/TIME: ${timestamp}
+SECTOR: ${weatherData.sectorName} (${weatherData.grid || 'LEH BASE'})
+DEFCON LEVEL: ALPHA
+OFFICER ID: OPERATOR-CADET-01
+OFFICER GRADE: ${triageScore >= 250 ? 'CLASS-S EXCELLENT' : 'CLASS-B SATISFACTORY'}
+ASSESSMENT SCORE: ${triageScore} / ${maxTriageScore} POINTS
+TARGET DISCRIMINATION INDEX (TDI): ${tdi}%
+
+--------------------------------------------------------------------------------
+CHAIN OF CUSTODY & INCIDENT RECORD
+--------------------------------------------------------------------------------
+1. INCIDENT #IN-8402:
+   - Event: Hostile Quadcopter Neutralized over Ordnance Perimeter
+   - Countermeasure: Tether Net Gun at 45m MSL
+   - Cargo Recovered: Military-spec encrypted comms transceiver unit
+   - Vault Seal Key: #SEC-094
+   - EOD Clearance: EOD Capt. K. Rathore Verified (Freq 5.8 GHz)
+
+2. INCIDENT #IN-8399:
+   - Event: Rogue Night-Hawk Drone Intercepted via GPS Spoofing
+   - Countermeasure: Navigational RF uplink overridden by Garuda-Rakshak counter-EW
+   - Target Landing: Helipad Bravo
+   - Firmware Status: Extracted & SHA-512 Signed
+
+3. INCIDENT #IN-8388:
+   - Event: Red-Team Drill Ammunition Fence Breach Countered
+   - Response Velocity: 18.2 seconds (+34% faster than standard benchmark)
+   - Board: HQ Simulation Board Approved
+
+--------------------------------------------------------------------------------
+TELEMETRY ENGAGEMENT LOGS (CURRENT SESSION)
+--------------------------------------------------------------------------------
+Total Engagements Recorded: ${engagementEvents.length}
+${engagementEvents.length > 0 ? engagementEvents.map((evt, idx) => `[#${idx + 1}] Target: ${evt.targetId} | DetTime: +${evt.detTimeSec}s | System: ${evt.countermeasure} | Result: ${evt.roePassed ? 'PASSED ROE' : 'DECOY PENALTY'} | Score: ${evt.eval.totalResultScore} PTS`).join('\n') : 'No live engagements triggered yet.'}
+
+--------------------------------------------------------------------------------
+CRYPTOGRAPHIC TAMPER-SEAL VERIFICATION
+--------------------------------------------------------------------------------
+ALGORITHM: SHA-512 / MIL-STD-810H
+CHECKSUM: ${shaHash}
+TAMPER INTEGRITY: VERIFIED & SEALED
+STATUS: READY FOR MILITARY BRASS DISPATCH & TACTICAL REVIEW
+================================================================================
+`;
+
+  const blob = new Blob([reportContent], { type: 'text/plain;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `AEGIS_DISA_CERT_884_Classified_Report_${Date.now()}.txt`;
+  a.click();
+
+  triggerToast('OFFICIAL FORENSIC DOSSIER DISA-CERT-884 ENCRYPTED & EXPORTED', 'download', 'text-primary');
 }
 
 // ============================================================================
