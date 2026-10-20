@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
-  <title>GARUDA-RAKSHAK // AEGIS C-UAS Tactical Command & Control System</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+  <title>SENTINEL-Drone // AI-Enabled Drone & Counter-Drone Threat Simulation Trainer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
   <script src="https://cdn.tailwindcss.com"></script>
   <script id="tailwind-config">
@@ -15,29 +15,20 @@
           colors: {
             "on-surface": "#dae3f1",
             "surface-container": "#17202b",
-            "on-tertiary-container": "#003f4b",
             "on-primary": "#003824",
             "on-surface-variant": "#bbcabf",
-            "surface-container-lowest": "#060f18",
+            "surface-container-lowest": "#060d17",
             "surface": "#0b141e",
-            "tertiary": "#4cd7f6",
+            "tertiary": "#38bdf8",
             "surface-tint": "#4edea3",
             "surface-variant": "#2d3640",
-            "on-error-container": "#ffdad6",
-            "tertiary-container": "#00b2d0",
-            "on-error": "#690005",
-            "error": "#ffb4ab",
-            "secondary": "#ffb77a",
-            "surface-container-high": "#222b35",
-            "on-background": "#dae3f1",
-            "secondary-container": "#d7790d",
+            "error": "#f43f5e",
             "error-container": "#93000a",
-            "background": "#0b141e",
-            "primary-container": "#10b981",
-            "primary": "#4edea3",
+            "secondary": "#f59e0b",
+            "surface-container-high": "#222b35",
             "surface-container-highest": "#2d3640",
-            "outline": "#86948a",
-            "surface-container-low": "#131c26"
+            "primary": "#4edea3",
+            "surface-container-low": "#111a24"
           },
           fontFamily: {
             mono: ["JetBrains Mono", "monospace"],
@@ -48,29 +39,24 @@
     };
   </script>
   <style>
-    body { overscroll-behavior: none; font-family: 'Inter', sans-serif; background-color: #0b141e; }
-    ::-webkit-scrollbar { display: none; }
+    body { overscroll-behavior: none; font-family: 'Inter', sans-serif; background-color: #060d17; color: #dae3f1; }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-thumb { background: #222b35; border-radius: 3px; }
     .tab-content { display: none; }
-    .tab-content.active { display: flex; }
-    .nav-btn.active { color: #4edea3; border-bottom: 2px solid #4edea3; background: rgba(78, 222, 163, 0.08); }
-    .flir-active {
-      filter: invert(1) hue-rotate(170deg) contrast(1.75) brightness(1.15) !important;
-    }
-    .weapon-card.active {
-      background-color: #2d3640;
-      border: 1px solid #4edea3;
-    }
+    .tab-content.flex { display: flex; }
+    .nav-btn.active { color: #4edea3; border-bottom: 2px solid #4edea3; background: rgba(78, 222, 163, 0.08); font-weight: bold; }
+    .active-classify { border-color: #4edea3 !important; background: rgba(78, 222, 163, 0.15) !important; color: #4edea3 !important; box-shadow: 0 0 10px rgba(78,222,163,0.3); }
     @media print {
-      header, nav, #toast-modal, .no-print, #ai-chat-drawer { display: none !important; }
+      header, nav, #tacticalToast, .no-print { display: none !important; }
       body { background: white !important; color: black !important; }
       .tab-content { display: flex !important; }
     }
   </style>
 </head>
-<body class="bg-surface text-on-surface font-sans flex flex-col min-h-screen">
+<body class="bg-surface-container-lowest text-on-surface font-sans flex flex-col min-h-screen">
 
-  <!-- TOP HEADER & TACTICAL COMMAND CONSOLE -->
-  <header class="fixed top-0 w-full z-50 pt-safe bg-surface-container-lowest/95 backdrop-blur-xl border-b border-surface-container-high shadow-lg">
+  <!-- TOP HEADER & MILITARY COMMAND CONSOLE -->
+  <header class="fixed top-0 w-full z-50 pt-safe bg-surface-container-lowest/95 backdrop-blur-xl border-b border-surface-container-high shadow-xl" id="topNavHeader">
     <div class="px-4 py-2 flex items-center justify-between">
       <div class="flex items-center gap-3">
         <div class="w-10 h-10 rounded-md bg-surface-container-high border border-primary/40 flex items-center justify-center text-primary shadow-[0_0_12px_rgba(78,222,163,0.2)]">
@@ -78,96 +64,108 @@
         </div>
         <div>
           <div class="flex items-center gap-2">
-            <span class="font-mono text-[10px] text-primary tracking-widest uppercase font-bold">GARUDA-RAKSHAK C2</span>
+            <span class="font-mono text-[10px] text-primary tracking-widest uppercase font-bold">SENTINEL-DRONE C2</span>
             <span class="px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-mono text-[9px] font-bold border border-surface-container-highest">MIL-STD-2525D</span>
             <span class="px-1.5 py-0.5 rounded bg-error-container/40 text-error font-mono text-[9px] font-bold border border-error/30 animate-pulse">DEFCON ALPHA</span>
+            <span class="px-1.5 py-0.5 rounded bg-primary/20 text-primary font-mono text-[9px] font-bold border border-primary/40">OFFLINE READY</span>
           </div>
-          <h1 class="text-base font-extrabold text-on-surface uppercase tracking-tight">C-UAS AI Threat Simulation & Tactical Execution System</h1>
+          <h1 class="text-sm font-extrabold text-on-surface uppercase tracking-tight">AI-Enabled Drone & Counter-Drone Threat Simulation Trainer</h1>
         </div>
       </div>
 
-      <!-- System Diagnostic & Sector Monitor -->
+      <!-- Center Status & Sector Monitor -->
       <div class="hidden lg:flex items-center gap-4 text-right border-l border-surface-container-high pl-4">
         <div>
           <div class="flex items-center justify-end gap-1 font-mono text-[10px] text-tertiary">
             <span class="material-symbols-outlined text-[12px]">public</span>
-            <select class="bg-surface-container text-tertiary font-mono text-[10px] px-1.5 py-0.5 rounded border border-tertiary/30 cursor-pointer outline-none" id="sector-select" onchange="changeDefenseSector(this.value)">
-              <option value="leh">LEH-LADAKH SECTOR (HIGH ALTITUDE)</option>
-              <option value="jaisalmer">THAR DESERT / JAISALMER BORDER</option>
-              <option value="siliguri">SILIGURI CORRIDOR / NORTH-EAST</option>
-              <option value="pathankot">PATHANKOT AIR BASE SECTOR</option>
+            <select class="bg-surface-container text-tertiary font-mono text-[10px] px-1.5 py-0.5 rounded border border-tertiary/30 cursor-pointer outline-none" id="sector-select" onchange="SimulationApp.showToast(`Sector synced: ${this.value.toUpperCase()}`, 'info')">
+              <option value="leh">LEH-LADAKH (FOB VAJRA 34°09'N)</option>
+              <option value="jaisalmer">THAR DESERT / BORDER OUTPOST</option>
+              <option value="siliguri">SILIGURI STRATEGIC CORRIDOR</option>
+              <option value="karwar">COASTAL NAVAL BASE KARWAR</option>
             </select>
           </div>
-          <div class="font-mono text-[11px] font-bold text-on-surface mt-0.5" id="weather-temp-label">18.5°C // WIND 12.4 KM/H</div>
-          <div class="font-mono text-[9px] text-tertiary mt-0.5" id="sector-grid-label">GRID: 34°09'N 77°34'E // LEH BASE</div>
+          <div class="font-mono text-[11px] font-bold text-on-surface mt-0.5" id="weather-temp-label">18.5°C // WIND 14.2 KM/H // VIS: 12 KM</div>
+          <div class="font-mono text-[9px] text-tertiary mt-0.5" id="tlxMetricLabel">NASA-TLX: 34.5 // HR: 74 BPM</div>
         </div>
 
-        <!-- Gap 1 Minimal Hardware Edge Monitor & Tactical Audio Toggle -->
-        <div class="border-l border-surface-container-high pl-3 font-mono text-[10px] flex flex-col items-end gap-1">
-          <div class="text-primary font-bold flex items-center justify-end gap-1">
-            <span class="material-symbols-outlined text-[12px]">memory</span>
-            <span>EDGE GPU: GTX 1650 / QUEST 3 (60 FPS)</span>
+        <!-- User Profile & Authentication Gateway Button -->
+        <div class="border-l border-surface-container-high pl-3 font-mono text-[10px] flex items-center gap-2">
+          <div class="flex flex-col items-end">
+            <div class="flex items-center gap-1.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-tertiary animate-pulse" id="authStatusLed"></span>
+              <span class="font-bold text-on-surface text-[11px]" id="cadetNameLabel">AUTHENTICATION REQUIRED</span>
+              <span class="px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-bold text-[9px] border border-surface-container-highest" id="cadetRoleBadge">UNVERIFIED</span>
+            </div>
+            <div class="text-[9px] text-on-surface-variant" id="cadetRankUnitLabel">ARMED FORCES VERIFICATION GATEWAY</div>
           </div>
-          <div class="flex items-center gap-2">
-            <span class="text-secondary" id="hw-metrics-label">VRAM: 1.2GB // INT8: 0.8ms</span>
-            <button class="bg-surface-container text-primary px-2 py-0.5 rounded font-mono text-[9px] border border-primary/40 flex items-center gap-1 hover:bg-primary/20 transition-all" id="audio-toggle-btn" onclick="toggleTacticalAudio()">
-              <span class="material-symbols-outlined text-[11px]" id="audio-icon">volume_up</span>
-              <span id="audio-status-label">AUDIO: ON</span>
-            </button>
-            <button class="bg-surface-container text-tertiary px-2 py-0.5 rounded font-mono text-[9px] border border-tertiary/40 flex items-center gap-1 hover:bg-tertiary/20 transition-all" onclick="toggleAIChatDrawer()">
-              <span class="material-symbols-outlined text-[11px]">smart_toy</span>
-              <span>AI CHAT ASSISTANT</span>
-            </button>
-          </div>
+          <button class="bg-surface-container hover:bg-surface-container-high text-primary px-2.5 py-1.5 rounded border border-primary/40 font-mono text-[10px] font-bold flex items-center gap-1 transition-all shadow-[0_0_8px_rgba(78,222,163,0.15)]" onclick="SimulationApp.logoutOrSwitchUser()" title="Switch User or Login as Instructor / Operator">
+            <span class="material-symbols-outlined text-[15px]">lock_reset</span>
+            <span>SWITCH / LOGIN</span>
+          </button>
         </div>
 
-        <!-- Cadet Officer Avatar -->
-        <img alt="Officer Profile" class="w-9 h-9 rounded-full border border-primary/50 object-cover shadow-md" src="https://lh3.googleusercontent.com/aida/AEtjO1UPTZ1t4J92qF_KhTwvsoVfPRvxIMut-m0qfApBT4RrrNYetLFSF2f0CdfiS7VM2QevsfSI8t8DUMoN0Xrd_zDjBi8wX3ORI9BhQ-0aWwPxtJ2Dn4rBZYT5twaHpdLK5ZnSDbx5YiyOuoQFwwvkmiPGU29x8blnI1xl9io6_S_QogjvA93oTIk8fiz58Sc3i2zkpywEoPblOluyDI-QpwZt8P5KlOdVID8vBgLySXmybYDSdqIFIuj7ico"/>
+        <!-- Hardware & Audio Controls -->
+        <div class="border-l border-surface-container-high pl-3 font-mono text-[10px] flex items-center gap-2">
+          <button class="bg-surface-container text-primary px-2 py-1 rounded text-[10px] border border-primary/40 flex items-center gap-1 hover:bg-primary/20" onclick="TacticalAudio.toggleAudio()" title="Toggle Tactical Audio Effects">
+            <span class="material-symbols-outlined text-[13px]">volume_up</span>
+            <span>AUDIO</span>
+          </button>
+          <button class="bg-surface-container text-tertiary px-2 py-1 rounded text-[10px] border border-tertiary/40 flex items-center gap-1 hover:bg-tertiary/20" onclick="SimulationApp.toggleLowHardwareMode()" title="Toggle 2D Lightweight Fallback for low-spec laptops">
+            <span class="material-symbols-outlined text-[13px]">memory</span>
+            <span>2D/3D MODE</span>
+          </button>
+          <button class="bg-primary text-on-primary px-2.5 py-1 rounded text-[10px] font-bold flex items-center gap-1 hover:bg-primary/90 shadow-[0_0_8px_rgba(78,222,163,0.3)]" onclick="DemoTourEngine.startTour()" title="Launch 5-Minute Guided SIH Walkthrough">
+            <span class="material-symbols-outlined text-[13px]">play_circle</span>
+            <span>GUIDED TOUR</span>
+          </button>
+          <button class="bg-surface-container text-on-surface px-2 py-1 rounded text-[10px] border border-surface-container-highest hover:bg-surface-container-high" onclick="DemoTourEngine.toggleKeyboardHelpModal()" title="View Keyboard Shortcuts">
+            <span>[ ? ]</span>
+          </button>
+        </div>
       </div>
     </div>
 
-    <!-- MAIN TACTICAL MODULE TABS (ALL 5 EXTENSION SCREENS & GAPS) -->
+    <!-- MAIN TACTICAL MODULE TABS -->
     <nav class="flex items-center justify-around bg-surface-container-low border-t border-surface-container-high px-2 font-mono text-xs overflow-x-auto">
-      <button class="nav-btn active flex items-center gap-1.5 px-3 py-2.5 transition-all whitespace-nowrap" onclick="switchTab('radar')" id="tab-btn-radar">
+      <button class="nav-btn active flex items-center gap-1.5 px-3 py-2.5 transition-all whitespace-nowrap text-primary border-b-2 border-primary bg-primary/10" onclick="SimulationApp.switchTab('radar')" id="tab-btn-radar">
         <span class="material-symbols-outlined text-[18px]">radar</span>
         <span>1. SURVEILLANCE RADAR</span>
       </button>
-      <button class="nav-btn flex items-center gap-1.5 px-3 py-2.5 transition-all text-on-surface-variant hover:text-on-surface whitespace-nowrap" onclick="switchTab('fpv')" id="tab-btn-fpv">
-        <span class="material-symbols-outlined text-[18px]">videocam</span>
-        <span>2. DRONE FPV COCKPIT</span>
-      </button>
-      <button class="nav-btn flex items-center gap-1.5 px-3 py-2.5 transition-all text-on-surface-variant hover:text-on-surface whitespace-nowrap" onclick="switchTab('sensors')" id="tab-btn-sensors">
+      <button class="nav-btn flex items-center gap-1.5 px-3 py-2.5 transition-all text-on-surface-variant hover:text-on-surface whitespace-nowrap" onclick="SimulationApp.switchTab('sensors')" id="tab-btn-sensors">
         <span class="material-symbols-outlined text-[18px]">graphic_eq</span>
-        <span>3. RFVIEW & FLEET</span>
+        <span>2. SENSOR FUSION & FLIR</span>
       </button>
-      <button class="nav-btn flex items-center gap-1.5 px-3 py-2.5 transition-all text-on-surface-variant hover:text-on-surface whitespace-nowrap" onclick="switchTab('triage')" id="tab-btn-triage">
+      <button class="nav-btn flex items-center gap-1.5 px-3 py-2.5 transition-all text-on-surface-variant hover:text-on-surface whitespace-nowrap" onclick="SimulationApp.switchTab('triage')" id="tab-btn-triage">
         <span class="material-symbols-outlined text-[18px]">alt_route</span>
-        <span>4. TRIAGE & COGNITIVE</span>
+        <span>3. THREAT TRIAGE & ACTIONS</span>
       </button>
-      <button class="nav-btn flex items-center gap-1.5 px-3 py-2.5 transition-all text-on-surface-variant hover:text-on-surface whitespace-nowrap" onclick="switchTab('director')" id="tab-btn-director">
-        <span class="material-symbols-outlined text-[18px]">psychology</span>
-        <span>5. AI DIRECTOR</span>
-      </button>
-      <button class="nav-btn flex items-center gap-1.5 px-3 py-2.5 transition-all text-on-surface-variant hover:text-on-surface whitespace-nowrap" onclick="switchTab('aar')" id="tab-btn-aar">
-        <span class="material-symbols-outlined text-[18px]">analytics</span>
-        <span>6. THREAT MATRIX & AAR</span>
+      <button class="nav-btn flex items-center gap-1.5 px-3 py-2.5 transition-all text-on-surface-variant hover:text-on-surface whitespace-nowrap" onclick="SimulationApp.switchTab('instructor')" id="tab-btn-instructor">
+        <span class="material-symbols-outlined text-[18px]" id="instTabIcon">admin_panel_settings</span>
+        <span id="instTabTitle">4. INSTRUCTOR COMMAND HUB</span>
+        <span class="px-1.5 py-0.2 rounded bg-secondary/20 text-secondary text-[8px] font-bold border border-secondary/30 ml-1" id="instTabBadge">ADMIN & INSTRUCTOR</span>
       </button>
     </nav>
   </header>
 
-  <!-- MAIN CONTENT CONTAINER -->
-  <main class="flex-1 pt-28 pb-20 px-4 max-w-7xl mx-auto w-full">
+  <!-- MAIN APPLICATION VIEWPORT -->
+  <main class="flex-1 pt-28 pb-10 px-4 max-w-7xl mx-auto w-full">
 
-    <!-- TAB 1: SURVEILLANCE RADAR & GAP 1 EDGE PHYSICS ACCELERATION (STITCH SCREEN 1) -->
-    <section class="tab-content active flex-col gap-4" id="tab-radar">
+    <!-- ================================================================= -->
+    <!-- TAB 1: SURVEILLANCE RADAR & 3D TACTICAL SIMULATION                -->
+    <!-- ================================================================= -->
+    <section class="tab-content flex flex-col gap-4" id="tab-radar">
       
-      <!-- Priority Alert Banner -->
+      <!-- Threat Alert & ROE Banner -->
       <div class="w-full bg-error-container/90 text-on-error-container p-3 rounded-md flex items-center justify-between shadow-md border border-error/40">
         <div class="flex items-center gap-3">
           <div class="w-3 h-3 rounded-full bg-error animate-ping"></div>
           <div>
-            <span class="font-mono text-[10px] text-error font-bold uppercase tracking-wider">TACTICAL SATURATION ALERT // SECTOR-7 PERIMETER</span>
-            <p class="font-bold text-sm text-on-error-container">MULTIPLE UNIDENTIFIED SWARM TARGETS CONVERGING ON DEFENDED BASE</p>
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-[10px] text-error font-bold uppercase tracking-wider" id="activeRoeBadge">ROE: HOSTILE_BORDER</span>
+              <span class="font-mono text-[10px] text-on-error-container font-bold" id="activeThreatDnaLabel">URBAN-DAY-CLEAR-SINGLE-1-RECON-HOVER</span>
+            </div>
+            <p class="font-bold text-sm text-on-error-container" id="activeScenarioTitle">Drill 01: Lone Commercial Quadcopter Reconnaissance</p>
           </div>
         </div>
         <div class="flex items-center gap-2 bg-surface-container-lowest/80 px-3 py-1 rounded font-mono text-xs font-bold text-error border border-error/30">
@@ -176,1092 +174,1280 @@
         </div>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <!-- Dual Simulation View: 3D Tactical Three.js & 2D Pulse Radar -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4" id="simViewContainer">
         
-        <!-- 360 Tactical Radar Display (Col 1 & 2) -->
+        <!-- Simulation Display Container (Col 1 & 2) -->
         <div class="lg:col-span-2 bg-surface-container-lowest rounded-md p-4 border border-surface-container-high shadow-xl flex flex-col gap-3 relative overflow-hidden">
           <div class="flex items-center justify-between z-10">
             <div class="flex items-center gap-2 font-mono text-xs text-primary font-bold">
               <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-              <span>GAP 1: SPATIAL PARTITIONING GRID // O(N) FLOCKING ACCELERATION</span>
+              <span>TACTICAL 360° SENSOR ARRAY // 500M KILL ZONE</span>
             </div>
             
             <div class="font-mono text-xs text-on-surface-variant flex items-center gap-2">
-              <button class="bg-surface-container text-secondary px-2 py-0.5 rounded font-mono text-[10px] border border-secondary/30 flex items-center gap-1" onclick="toggleADSBFeed()">
-                <span class="material-symbols-outlined text-[12px]">flight</span>
-                <span id="adsb-toggle-label">ADS-B AIRSPACE: ON</span>
+              <button class="bg-surface-container text-tertiary px-2 py-0.5 rounded font-mono text-[10px] border border-tertiary/30 hover:bg-tertiary/20" onclick="SimulationApp.toggleView3D2D()">
+                TOGGLE 2D / 3D VIEW
               </button>
-              <button class="bg-surface-container text-tertiary px-2 py-0.5 rounded font-mono text-[10px] border border-tertiary/30" id="range-toggle-btn" onclick="toggleRadarRange()">SPAN: 2.0 KM</button>
+              <button class="bg-surface-container text-secondary px-2 py-0.5 rounded font-mono text-[10px] border border-secondary/30" onclick="Radar2D.setSpan(Radar2D.radarSpanMeters === 2000 ? 1000 : 2000)">
+                SPAN: 2.0 KM
+              </button>
             </div>
           </div>
 
-          <!-- Radar Canvas Display -->
-          <div class="relative w-full aspect-square max-h-[420px] mx-auto rounded bg-surface-container-lowest flex items-center justify-center border border-surface-container-high overflow-hidden" id="radar-container">
-            <div class="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent pointer-events-none"></div>
+          <!-- Radar and 3D Containers Stacked -->
+          <div class="relative w-full aspect-square max-h-[460px] mx-auto rounded bg-surface-container-lowest flex items-center justify-center border border-surface-container-high overflow-hidden" id="radar-container">
+            
+            <!-- 3D Three.js WebGL Canvas Container -->
+            <div class="absolute inset-0 z-10" id="simContainer3D"></div>
 
-            <!-- Range Rings -->
-            <div class="absolute w-[90%] h-[90%] rounded-full border border-surface-container-high flex items-center justify-center">
-              <span class="absolute top-1 font-mono text-[9px] text-outline-variant">2000M RANGE RING</span>
-              <div class="w-[66%] h-[66%] rounded-full border border-surface-container-high flex items-center justify-center">
-                <span class="absolute top-1 font-mono text-[9px] text-outline-variant">1000M RANGE RING</span>
-                <div class="w-[50%] h-[50%] rounded-full border border-primary/20 flex items-center justify-center">
-                  <span class="absolute top-1 font-mono text-[9px] text-primary/70">500M KILL ZONE</span>
+            <!-- 2D High Performance Pulse Radar Canvas (Overlay or Fallback) -->
+            <canvas class="absolute inset-0 w-full h-full z-20 cursor-crosshair" id="simCanvas2D"></canvas>
+
+            <!-- Floating Tactical FLIR Thermal PIP Overlay on Radar -->
+            <div class="absolute bottom-2 right-2 z-30 w-48 h-32 bg-surface-container-lowest/95 border border-primary/50 rounded shadow-2xl backdrop-blur-md overflow-hidden flex flex-col pointer-events-auto" id="radarPipOverlay">
+              <div class="bg-surface-container-high/90 px-2 py-0.5 flex items-center justify-between text-[9px] font-mono border-b border-primary/30">
+                <span class="text-primary font-bold flex items-center gap-1">
+                  <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+                  FLIR THERMAL PIP
+                </span>
+                <span class="text-tertiary" id="radarPipModeLabel">WHITE-HOT</span>
+              </div>
+              <canvas class="w-full flex-1" id="radarPipCanvas" width="192" height="104"></canvas>
+            </div>
+          </div>
+
+          <!-- Quick Action Buttons -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 font-mono text-xs pt-2 border-t border-surface-container-high">
+            <button class="bg-surface-container text-tertiary p-2 rounded border border-tertiary/40 flex items-center justify-center gap-1.5 hover:bg-tertiary/20 transition-all font-bold" onclick="SimulationApp.executeAction('track')">
+              <span class="material-symbols-outlined text-[16px]">my_location</span>
+              <span>[Q] TRACK</span>
+            </button>
+            <button class="bg-surface-container text-primary p-2 rounded border border-primary/40 flex items-center justify-center gap-1.5 hover:bg-primary/20 transition-all font-bold" onclick="SimulationApp.executeAction('jam')">
+              <span class="material-symbols-outlined text-[16px]">wifi_off</span>
+              <span>[W] RF JAMMER</span>
+            </button>
+            <button class="bg-surface-container text-error p-2 rounded border border-error/40 flex items-center justify-center gap-1.5 hover:bg-error/20 transition-all font-bold" onclick="SimulationApp.executeAction('laser')">
+              <span class="material-symbols-outlined text-[16px]">bolt</span>
+              <span>[E] LASER DEW</span>
+            </button>
+            <button class="bg-surface-container text-secondary p-2 rounded border border-secondary/40 flex items-center justify-center gap-1.5 hover:bg-secondary/20 transition-all font-bold" onclick="SimulationApp.executeAction('alert')">
+              <span class="material-symbols-outlined text-[16px]">notification_important</span>
+              <span>[R] ALERT TEAM</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Right Side: Active Targets List & Target Telemetry (Col 3) -->
+        <div class="bg-surface-container-lowest rounded-md p-4 border border-surface-container-high shadow-xl flex flex-col gap-3">
+          <div class="flex items-center justify-between border-b border-surface-container-high pb-2">
+            <span class="font-mono text-xs text-primary font-bold uppercase tracking-wider flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-[16px]">adjust</span>
+              AIRSPACE CONTACTS
+            </span>
+            <span class="font-mono text-[10px] text-on-surface-variant">CLICK TO LOCK</span>
+          </div>
+
+          <!-- Active Contacts Scroll List -->
+          <div class="flex flex-col gap-2 overflow-y-auto max-h-[220px]" id="activeTargetsList">
+            <!-- Dynamic targets injected here -->
+          </div>
+
+          <!-- Locked Target Telemetry Dossier -->
+          <div class="bg-surface-container p-3 rounded border border-surface-container-highest flex flex-col gap-2">
+            <div class="flex items-center justify-between">
+              <span class="font-mono text-[10px] text-secondary font-bold" id="selectedTargetIdLabel">NO TARGET SELECTED</span>
+              <span class="font-mono text-[9px] px-1.5 py-0.5 rounded bg-surface-container-high text-tertiary" id="selectedTargetRangeLabel">-- METERS</span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 text-[10px] font-mono">
+              <div class="bg-surface-container-high/60 p-1.5 rounded">
+                <span class="text-on-surface-variant block">VELOCITY:</span>
+                <span class="text-on-surface font-bold" id="selectedTargetSpeedLabel">-- M/S</span>
+              </div>
+              <div class="bg-surface-container-high/60 p-1.5 rounded">
+                <span class="text-on-surface-variant block">RADAR RCS:</span>
+                <span class="text-on-surface font-bold" id="selectedTargetRcsLabel">-- m²</span>
+              </div>
+              <div class="bg-surface-container-high/60 p-1.5 rounded col-span-2">
+                <span class="text-on-surface-variant block">RF FREQUENCY:</span>
+                <span class="text-tertiary font-bold" id="selectedTargetFreqLabel">--</span>
+              </div>
+            </div>
+
+            <button class="w-full bg-primary/20 text-primary py-1.5 rounded font-mono text-xs font-bold border border-primary/40 hover:bg-primary/30 flex items-center justify-center gap-1 mt-1" onclick="SimulationApp.confirmPrimaryEngagement()">
+              <span class="material-symbols-outlined text-[14px]">flash_on</span>
+              <span>ENGAGE [ENTER]</span>
+            </button>
+          </div>
+
+          <!-- Mission Briefing Accordion -->
+          <div class="bg-surface-container-low p-2.5 rounded border border-surface-container-high text-xs font-mono">
+            <span class="text-secondary font-bold block mb-1">MISSION BRIEFING:</span>
+            <p class="text-[10px] text-on-surface-variant leading-relaxed" id="scenarioBriefingText">
+              Observe tactical airspace, classify incoming drone contacts, and deploy countermeasures per ROE.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- TAB 2: MULTI-CHANNEL SENSOR FUSION & FLIR PIP CAMERA              -->
+    <!-- ================================================================= -->
+    <section class="tab-content flex-col gap-4" id="tab-sensors">
+      <!-- Target Selection Bar for Sensor Slew -->
+      <div class="bg-surface-container-lowest p-3 rounded-md border border-surface-container-high flex flex-col gap-2">
+        <div class="flex items-center justify-between font-mono text-xs">
+          <span class="text-tertiary font-bold flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">track_changes</span>
+            ACTIVE SENSOR TRACKING LOCK
+          </span>
+          <span class="text-[10px] text-on-surface-variant">CLICK TO SLEW FLIR OPTICAL POD & RF/ACOUSTIC DETECTORS</span>
+        </div>
+        <div class="flex items-center gap-2 flex-wrap" id="tab2TargetSelector">
+          <!-- Populated dynamically by SensorFusion.renderTargetSelector() -->
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4" id="sensorFusionContainer">
+        
+        <!-- Left: Optical & Thermal FLIR PIP Camera -->
+        <div class="bg-surface-container-lowest p-4 rounded-md border border-surface-container-high flex flex-col gap-3">
+          <div class="flex items-center justify-between flex-wrap gap-2">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-xs text-primary font-bold flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[16px]">videocam</span>
+                OPTICAL / THERMAL FLIR PIP CAMERA
+              </span>
+              <span class="text-[10px] text-primary font-mono px-2 py-0.5 rounded bg-surface-container border border-primary/30" id="flirActiveModeText">WHITE-HOT</span>
+            </div>
+            <!-- Mode Switcher -->
+            <div class="flex items-center gap-1 font-mono text-[9px] flex-wrap">
+              <button class="bg-surface-container text-on-surface px-2 py-0.5 rounded border border-surface-container-highest hover:bg-surface-container-high" onclick="SensorFusion.setFlirMode('white_hot')">WHITE-HOT</button>
+              <button class="bg-surface-container text-on-surface px-2 py-0.5 rounded border border-surface-container-highest hover:bg-surface-container-high" onclick="SensorFusion.setFlirMode('black_hot')">BLACK-HOT</button>
+              <button class="bg-surface-container text-secondary px-2 py-0.5 rounded border border-secondary/30 hover:bg-secondary/20" onclick="SensorFusion.setFlirMode('ironbow')">IRONBOW</button>
+              <button class="bg-surface-container text-primary px-2 py-0.5 rounded border border-primary/30 hover:bg-primary/20" onclick="SensorFusion.setFlirMode('nvg')">NVG GREEN</button>
+              <button class="bg-surface-container text-tertiary px-2 py-0.5 rounded border border-tertiary/30 hover:bg-tertiary/20" onclick="SensorFusion.setFlirMode('daylight')">DAYLIGHT</button>
+            </div>
+          </div>
+
+          <!-- PIP Canvas -->
+          <div class="relative w-full aspect-video rounded bg-black flex items-center justify-center border border-surface-container-high overflow-hidden shadow-[inset_0_0_20px_rgba(0,0,0,0.8)]">
+            <canvas class="w-full h-full" id="pipCanvas" width="480" height="270"></canvas>
+          </div>
+
+          <!-- Zoom controls -->
+          <div class="flex items-center justify-between font-mono text-xs">
+            <span class="text-on-surface-variant text-[10px]">DIGITAL OPTICAL ZOOM:</span>
+            <div class="flex items-center gap-1">
+              <button class="bg-surface-container text-on-surface px-2.5 py-0.5 rounded border border-surface-container-highest hover:bg-surface-container-high" onclick="SensorFusion.setZoom(1.0)">1X</button>
+              <button class="bg-surface-container text-on-surface px-2.5 py-0.5 rounded border border-surface-container-highest hover:bg-surface-container-high" onclick="SensorFusion.setZoom(2.0)">2X</button>
+              <button class="bg-surface-container text-on-surface px-2.5 py-0.5 rounded border border-surface-container-highest hover:bg-surface-container-high" onclick="SensorFusion.setZoom(4.0)">4X</button>
+              <button class="bg-surface-container text-on-surface px-2.5 py-0.5 rounded border border-surface-container-highest hover:bg-surface-container-high" onclick="SensorFusion.setZoom(8.0)">8X</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: RF Spectrum Analyzer, Acoustic Harmonics & Two-Way Radio -->
+        <div class="flex flex-col gap-4">
+          
+          <!-- RF Spectrum Waterfall Canvas -->
+          <div class="bg-surface-container-lowest p-4 rounded-md border border-surface-container-high flex flex-col gap-2">
+            <div class="flex items-center justify-between font-mono text-xs">
+              <span class="text-tertiary font-bold flex items-center gap-1">
+                <span class="material-symbols-outlined text-[16px]">signal_cellular_alt</span>
+                RF SPECTRUM (FFT + CASCADING ROLLING WATERFALL)
+              </span>
+              <span class="text-[9px] text-secondary font-mono">SNR: +18.4 dB [433M - 5.8G]</span>
+            </div>
+            <div class="w-full h-28 rounded bg-surface-container-lowest border border-surface-container-high overflow-hidden shadow-inner">
+              <canvas class="w-full h-full" id="rfSpectrumCanvas" width="480" height="112"></canvas>
+            </div>
+          </div>
+
+          <!-- Acoustic Propeller Harmonics -->
+          <div class="bg-surface-container-lowest p-4 rounded-md border border-surface-container-high flex flex-col gap-2">
+            <div class="flex items-center justify-between font-mono text-xs">
+              <span class="text-primary font-bold flex items-center gap-1">
+                <span class="material-symbols-outlined text-[16px]">hearing</span>
+                ACOUSTIC BLADE-PASS FREQUENCY (BPF)
+              </span>
+              <button class="bg-surface-container text-primary text-[10px] px-2 py-0.5 rounded border border-primary/40 hover:bg-primary/20 flex items-center gap-1 transition-all" id="acousticAudioToggleBtn" onclick="SensorFusion.toggleAcousticAudio()">
+                <span class="material-symbols-outlined text-[13px]">volume_up</span> LISTEN TO MOTOR
+              </button>
+            </div>
+            <div class="w-full h-24 rounded bg-surface-container-lowest border border-surface-container-high overflow-hidden shadow-inner">
+              <canvas class="w-full h-full" id="acousticCanvas" width="480" height="96"></canvas>
+            </div>
+          </div>
+
+          <!-- Perimeter Patrol Radio Feed & Interactive Transmitter -->
+          <div class="bg-surface-container-lowest p-3 rounded-md border border-surface-container-high flex flex-col gap-2">
+            <div class="flex items-center justify-between font-mono text-[10px]">
+              <span class="text-secondary font-bold uppercase tracking-wider flex items-center gap-1">
+                <span class="material-symbols-outlined text-[14px]">campaign</span>
+                PERIMETER PATROL GUARD RADIO FEED (TWO-WAY CHATTER)
+              </span>
+              <span class="text-primary animate-pulse flex items-center gap-1">● COMMS NET ONLINE</span>
+            </div>
+            
+            <div class="flex flex-col gap-1 max-h-28 overflow-y-auto pr-1" id="radioChatterFeed">
+              <!-- Dynamically populated radio chatter -->
+            </div>
+
+            <!-- Quick Action Radio Callouts -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 pt-1 border-t border-surface-container-high">
+              <button class="bg-surface-container text-error text-[9px] font-mono font-bold py-1 px-1.5 rounded border border-error/40 hover:bg-error/20 transition-all text-center truncate" title="Issue Red Alert to all sentries" onclick="SensorFusion.sendRadioTransmission('RED ALERT! All perimeter sentries engage visual watch!')">[1. RED ALERT]</button>
+              <button class="bg-surface-container text-secondary text-[9px] font-mono font-bold py-1 px-1.5 rounded border border-secondary/40 hover:bg-secondary/20 transition-all text-center truncate" title="Request transponder squawk" onclick="SensorFusion.sendRadioTransmission('Interrogate target transponder! Request squawk IFF!')">[2. REQUEST IFF]</button>
+              <button class="bg-surface-container text-tertiary text-[9px] font-mono font-bold py-1 px-1.5 rounded border border-tertiary/40 hover:bg-tertiary/20 transition-all text-center truncate" title="Evacuate ground personnel" onclick="SensorFusion.sendRadioTransmission('Sound evac siren at Bunker S7 and Helipad!')">[3. ORDER EVAC]</button>
+              <button class="bg-surface-container text-primary text-[9px] font-mono font-bold py-1 px-1.5 rounded border border-primary/40 hover:bg-primary/20 transition-all text-center truncate" title="Slew searchlight onto target" onclick="SensorFusion.sendRadioTransmission('Slew searchlight xenon arc lamp onto contact!')">[4. SEARCHLIGHTS]</button>
+            </div>
+
+            <!-- Custom Radio Transmitter Input -->
+            <div class="flex items-center gap-1.5 pt-1">
+              <input type="text" id="radioTransmitInput" placeholder="Type transmission to guard force (e.g. 'Searchlight', 'Engage')..." class="bg-surface-container text-on-surface text-[10px] font-mono px-2 py-1 rounded border border-surface-container-highest flex-1 focus:outline-none focus:border-primary" onkeydown="if(event.key==='Enter') SensorFusion.sendRadioTransmission()">
+              <button class="bg-primary text-on-primary text-[10px] font-mono font-bold px-3 py-1 rounded hover:bg-primary/90 flex items-center gap-1 transition-all" onclick="SensorFusion.sendRadioTransmission()">
+                <span class="material-symbols-outlined text-[13px]">send</span> TRANSMIT
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- TAB 3: THREAT TRIAGE & COUNTERMEASURE ACTIONS                    -->
+    <!-- ================================================================= -->
+    <section class="tab-content flex-col gap-4" id="tab-triage">
+      <div class="bg-surface-container-lowest p-4 rounded-md border border-surface-container-high flex flex-col gap-4" id="threatDecisionBoard">
+        <div class="flex items-center justify-between border-b border-surface-container-high pb-2">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary text-[20px]">alt_route</span>
+            <h2 class="font-mono text-sm font-bold text-on-surface uppercase">THREAT CLASSIFICATION & ENGAGEMENT AUTHORITY</h2>
+          </div>
+          <span class="font-mono text-xs text-secondary font-bold">HOTKEYS: 1-8 CLASSIFY // Q-R ACT</span>
+        </div>
+
+        <!-- 8 Threat Classification Buttons -->
+        <div class="flex flex-col gap-2">
+          <span class="font-mono text-xs text-on-surface-variant font-bold">1. ASSIGN THREAT CLASSIFICATION:</span>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 font-mono text-xs">
+            <button class="classify-btn bg-surface-container p-2.5 rounded border border-surface-container-highest hover:border-primary/50 text-left" id="classify-btn-bird" onclick="SimulationApp.classifySelected('bird')">
+              <span class="text-tertiary block font-bold">[1] BIRD / FAUNA</span>
+              <span class="text-[9px] text-on-surface-variant">Biological clutter</span>
+            </button>
+            <button class="classify-btn bg-surface-container p-2.5 rounded border border-surface-container-highest hover:border-primary/50 text-left" id="classify-btn-civilian" onclick="SimulationApp.classifySelected('civilian')">
+              <span class="text-tertiary block font-bold">[2] CIVILIAN DRONE</span>
+              <span class="text-[9px] text-on-surface-variant">Unauthorized hobbyist</span>
+            </button>
+            <button class="classify-btn bg-surface-container p-2.5 rounded border border-surface-container-highest hover:border-primary/50 text-left" id="classify-btn-recon" onclick="SimulationApp.classifySelected('recon')">
+              <span class="text-primary block font-bold">[3] HOSTILE RECON</span>
+              <span class="text-[9px] text-on-surface-variant">Commercial Quadcopter</span>
+            </button>
+            <button class="classify-btn bg-surface-container p-2.5 rounded border border-surface-container-highest hover:border-primary/50 text-left" id="classify-btn-kamikaze" onclick="SimulationApp.classifySelected('kamikaze')">
+              <span class="text-error block font-bold">[4] KAMIKAZE FPV</span>
+              <span class="text-[9px] text-on-surface-variant">Lethal kinetic striker</span>
+            </button>
+            <button class="classify-btn bg-surface-container p-2.5 rounded border border-surface-container-highest hover:border-primary/50 text-left" id="classify-btn-payload" onclick="SimulationApp.classifySelected('payload')">
+              <span class="text-secondary block font-bold">[5] PAYLOAD DROPPER</span>
+              <span class="text-[9px] text-on-surface-variant">Shaped charge dropper</span>
+            </button>
+            <button class="classify-btn bg-surface-container p-2.5 rounded border border-surface-container-highest hover:border-primary/50 text-left" id="classify-btn-decoy" onclick="SimulationApp.classifySelected('decoy')">
+              <span class="text-secondary block font-bold">[6] RADAR DECOY</span>
+              <span class="text-[9px] text-on-surface-variant">Chaff / Non-lethal lure</span>
+            </button>
+            <button class="classify-btn bg-surface-container p-2.5 rounded border border-surface-container-highest hover:border-primary/50 text-left" id="classify-btn-swarm_node" onclick="SimulationApp.classifySelected('swarm_node')">
+              <span class="text-primary block font-bold">[7] SWARM NODE</span>
+              <span class="text-[9px] text-on-surface-variant">Coordinated mesh unit</span>
+            </button>
+            <button class="classify-btn bg-surface-container p-2.5 rounded border border-surface-container-highest hover:border-primary/50 text-left" id="classify-btn-unknown" onclick="SimulationApp.classifySelected('unknown')">
+              <span class="text-on-surface-variant block font-bold">[8] UNKNOWN</span>
+              <span class="text-[9px] text-on-surface-variant">Ambiguous track</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Threat Priority Selector -->
+        <div class="flex flex-col gap-2">
+          <span class="font-mono text-xs text-on-surface-variant font-bold">2. ASSIGN THREAT PRIORITY:</span>
+          <div class="grid grid-cols-4 gap-2 font-mono text-xs">
+            <button class="bg-surface-container p-2 rounded border border-surface-container-highest text-tertiary hover:bg-tertiary/10 font-bold" onclick="SimulationApp.setPriority('LOW')">LOW</button>
+            <button class="bg-surface-container p-2 rounded border border-surface-container-highest text-secondary hover:bg-secondary/10 font-bold" onclick="SimulationApp.setPriority('MEDIUM')">MEDIUM</button>
+            <button class="bg-surface-container p-2 rounded border border-surface-container-highest text-error hover:bg-error/10 font-bold" onclick="SimulationApp.setPriority('HIGH')">HIGH</button>
+            <button class="bg-surface-container p-2 rounded border border-error/50 text-error hover:bg-error/20 font-bold animate-pulse" onclick="SimulationApp.setPriority('CRITICAL')">CRITICAL</button>
+          </div>
+        </div>
+
+        <!-- Counter-Drone Response Actions -->
+        <div class="flex flex-col gap-2">
+          <span class="font-mono text-xs text-on-surface-variant font-bold">3. AUTHORIZE COUNTERMEASURE ACTION:</span>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 font-mono text-xs">
+            <!-- Soft-Kill Options -->
+            <button class="bg-surface-container p-3 rounded border border-primary/40 hover:bg-primary/20 text-left flex flex-col gap-1" onclick="SimulationApp.executeAction('jam')">
+              <span class="text-primary font-bold flex items-center gap-1">
+                <span class="material-symbols-outlined text-[16px]">wifi_off</span>
+                RF SOFT-KILL
+              </span>
+              <span class="text-[9px] text-on-surface-variant">Directional Jammer (Zero Collateral)</span>
+            </button>
+
+            <button class="bg-surface-container p-3 rounded border border-tertiary/40 hover:bg-tertiary/20 text-left flex flex-col gap-1" onclick="SimulationApp.executeAction('spoof')">
+              <span class="text-tertiary font-bold flex items-center gap-1">
+                <span class="material-symbols-outlined text-[16px]">satellite_alt</span>
+                GPS SPOOFING
+              </span>
+              <span class="text-[9px] text-on-surface-variant">Inject false ephemeris / RTH trigger</span>
+            </button>
+
+            <!-- Hard-Kill Options -->
+            <button class="bg-surface-container p-3 rounded border border-error/40 hover:bg-error/20 text-left flex flex-col gap-1" onclick="SimulationApp.executeAction('laser')">
+              <span class="text-error font-bold flex items-center gap-1">
+                <span class="material-symbols-outlined text-[16px]">bolt</span>
+                LASER DEW
+              </span>
+              <span class="text-[9px] text-on-surface-variant">Directed Energy instant burn-through</span>
+            </button>
+
+            <button class="bg-surface-container p-3 rounded border border-error/40 hover:bg-error/20 text-left flex flex-col gap-1" onclick="SimulationApp.executeAction('hardkill')">
+              <span class="text-error font-bold flex items-center gap-1">
+                <span class="material-symbols-outlined text-[16px]">rocket_launch</span>
+                KINETIC NET
+              </span>
+              <span class="text-[9px] text-on-surface-variant">Interceptor drone ballistic capture</span>
+            </button>
+          </div>
+
+          <!-- Secondary Tactical Actions -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 font-mono text-xs mt-1">
+            <button class="bg-surface-container p-2 rounded border border-surface-container-highest text-on-surface hover:bg-surface-container-high" onclick="SimulationApp.executeAction('track')">
+              TRACK ONLY
+            </button>
+            <button class="bg-surface-container p-2 rounded border border-surface-container-highest text-secondary hover:bg-secondary/10" onclick="SimulationApp.executeAction('alert')">
+              REPORT / ALERT TEAM
+            </button>
+            <button class="bg-surface-container p-2 rounded border border-surface-container-highest text-error hover:bg-error/10" onclick="SimulationApp.executeAction('evacuate')">
+              EVACUATE ASSET
+            </button>
+            <button class="bg-surface-container p-2 rounded border border-surface-container-highest text-on-surface-variant hover:bg-surface-container-high" onclick="SimulationApp.executeAction('ignore')">
+              MARK NON-THREAT
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- TAB 4: INSTRUCTOR COMMAND HUB (SCENARIOS, DOCTRINE & COHORT AAR) -->
+    <!-- ================================================================= -->
+    <section class="tab-content flex-col gap-4" id="tab-instructor">
+      
+      <!-- Sub-Navigation Bar for Instructor Command Hub -->
+      <div class="bg-surface-container-lowest p-3 rounded-md border border-surface-container-high flex flex-wrap items-center justify-between gap-3 shadow-md">
+        <div class="flex items-center gap-2">
+          <span class="font-mono text-xs text-primary font-bold uppercase tracking-wider flex items-center gap-1.5 px-1">
+            <span class="material-symbols-outlined text-[18px]">military_tech</span>
+            INSTRUCTOR & ADMIN COMMAND HUB
+          </span>
+          <span class="font-mono text-[10px] px-2 py-0.5 rounded bg-primary/20 text-primary border border-primary/30 font-bold" id="instructorHubClearanceBadge">CLEARANCE LEVEL: 4 (CHIEF INSTRUCTOR / ADMIN)</span>
+        </div>
+
+        <!-- 3 Sub-Tabs: Scenarios & Threat Lab, Live Doctrine & Interventions, After-Action Cohort Analysis -->
+        <div class="flex items-center gap-1 bg-surface-container p-1 rounded border border-surface-container-highest font-mono text-xs">
+          <button id="instructor-subtab-btn-scenarios" onclick="SimulationApp.switchInstructorSubTab('scenarios')" class="px-3 py-1.5 rounded font-bold transition-all bg-primary text-on-primary flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[15px]">neurology</span>
+            1. SCENARIOS & THREAT LAB
+          </button>
+          <button id="instructor-subtab-btn-doctrine" onclick="SimulationApp.switchInstructorSubTab('doctrine')" class="px-3 py-1.5 rounded font-bold transition-all text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[15px]">gavel</span>
+            2. LIVE DOCTRINE & ROE
+          </button>
+          <button id="instructor-subtab-btn-analysis" onclick="SimulationApp.switchInstructorSubTab('analysis')" class="px-3 py-1.5 rounded font-bold transition-all text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[15px]">analytics</span>
+            3. AFTER-ACTION COHORT ANALYSIS
+          </button>
+        </div>
+      </div>
+
+      <!-- =============================================================== -->
+      <!-- SUB-PANEL 1: SCENARIOS & THREAT LAB                             -->
+      <!-- =============================================================== -->
+      <div id="instructor-sub-scenarios" class="flex flex-col gap-4">
+        
+        <!-- Threat DNA Input & Random Seed Bar -->
+        <div class="bg-surface-container-lowest p-3 rounded-md border border-surface-container-high flex flex-col md:flex-row items-center justify-between gap-3">
+          <div class="flex items-center gap-2 w-full md:w-auto">
+            <span class="font-mono text-xs text-primary font-bold flex items-center gap-1 shrink-0">
+              <span class="material-symbols-outlined text-[16px]">qr_code_2</span>
+              THREAT DNA CODE:
+            </span>
+            <input type="text" id="threatDnaInput" placeholder="e.g. URBAN-NIGHT-CLEAR-SWARM-5-PINCER-FLOCK-1003" class="bg-surface-container px-3 py-1.5 rounded border border-surface-container-highest text-on-surface font-mono text-xs w-full md:w-96 focus:outline-none focus:border-primary" />
+          </div>
+          <div class="flex items-center gap-2 w-full md:w-auto justify-end">
+            <button onclick="SimulationApp.loadScenarioFromDNA(document.getElementById('threatDnaInput').value.trim())" class="bg-primary text-on-primary px-3 py-1.5 rounded font-mono text-xs font-bold hover:bg-primary/90 flex items-center gap-1">
+              <span class="material-symbols-outlined text-[15px]">play_arrow</span>
+              LOAD DNA
+            </button>
+            <button onclick="InstructorConsole.generateRandomScenario()" class="bg-surface-container text-tertiary px-3 py-1.5 rounded font-mono text-xs font-bold border border-tertiary/40 hover:bg-tertiary/20 flex items-center gap-1">
+              <span class="material-symbols-outlined text-[15px]">shuffle</span>
+              RANDOM SEED
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          
+          <!-- Left: 12 Scripted Military Training Drills (Col 1 & 2) -->
+          <div class="lg:col-span-2 bg-surface-container-lowest p-4 rounded-md border border-surface-container-high flex flex-col gap-3">
+            <div class="flex items-center justify-between border-b border-surface-container-high pb-2">
+              <span class="font-mono text-xs text-primary font-bold uppercase tracking-wider flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[16px]">list_alt</span>
+                OFFICIAL DEFENSE TRAINING CURRICULUM (12 SCRIPTED DRILLS)
+              </span>
+              <span class="font-mono text-[10px] text-on-surface-variant">MIL-STD BENCHMARKED</span>
+            </div>
+
+            <!-- Scrollable 12 Drills Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-[460px] overflow-y-auto pr-1">
+              
+              <!-- Drill 01 -->
+              <div class="bg-surface-container p-3 rounded border border-surface-container-highest flex flex-col justify-between hover:border-primary/50 transition-colors">
+                <div>
+                  <div class="flex items-center justify-between mb-1">
+                    <span class="font-mono text-xs font-bold text-on-surface">Drill 01: Lone Quad Recon</span>
+                    <span class="font-mono text-[9px] px-1.5 py-0.5 rounded bg-primary/20 text-primary font-bold">EASY</span>
+                  </div>
+                  <p class="font-mono text-[10px] text-on-surface-variant line-clamp-2">Unscheduled micro-multirotor hovering near NW perimeter at 120m altitude. Establish track and jam.</p>
+                </div>
+                <div class="flex items-center justify-between mt-2 pt-2 border-t border-surface-container-high/60">
+                  <span class="font-mono text-[9px] text-tertiary">ROE: TIGHT // URBAN</span>
+                  <button onclick="SimulationApp.loadScenarioById('SCEN-01'); SimulationApp.switchTab('radar');" class="bg-primary/20 hover:bg-primary text-primary hover:text-on-primary px-2.5 py-1 rounded font-mono text-[10px] font-bold transition-colors">LAUNCH</button>
+                </div>
+              </div>
+
+              <!-- Drill 02 -->
+              <div class="bg-surface-container p-3 rounded border border-surface-container-highest flex flex-col justify-between hover:border-primary/50 transition-colors">
+                <div>
+                  <div class="flex items-center justify-between mb-1">
+                    <span class="font-mono text-xs font-bold text-on-surface">Drill 02: High-Speed FPV Kamikaze</span>
+                    <span class="font-mono text-[9px] px-1.5 py-0.5 rounded bg-secondary/20 text-secondary font-bold">MEDIUM</span>
+                  </div>
+                  <p class="font-mono text-[10px] text-on-surface-variant line-clamp-2">Two carbon-fiber racing FPV drones flying nap-of-the-earth at 38 m/s towards ammo depot.</p>
+                </div>
+                <div class="flex items-center justify-between mt-2 pt-2 border-t border-surface-container-high/60">
+                  <span class="font-mono text-[9px] text-tertiary">ROE: HOSTILE // URBAN</span>
+                  <button onclick="SimulationApp.loadScenarioById('SCEN-02'); SimulationApp.switchTab('radar');" class="bg-primary/20 hover:bg-primary text-primary hover:text-on-primary px-2.5 py-1 rounded font-mono text-[10px] font-bold transition-colors">LAUNCH</button>
+                </div>
+              </div>
+
+              <!-- Drill 03 -->
+              <div class="bg-surface-container p-3 rounded border border-surface-container-highest flex flex-col justify-between hover:border-primary/50 transition-colors">
+                <div>
+                  <div class="flex items-center justify-between mb-1">
+                    <span class="font-mono text-xs font-bold text-on-surface">Drill 03: Fixed-Wing Standoff Recon</span>
+                    <span class="font-mono text-[9px] px-1.5 py-0.5 rounded bg-secondary/20 text-secondary font-bold">MEDIUM</span>
+                  </div>
+                  <p class="font-mono text-[10px] text-on-surface-variant line-clamp-2">Medium-altitude fixed-wing UAV executing figure-8 ISR pattern 1400m out. GPS spoofing drill.</p>
+                </div>
+                <div class="flex items-center justify-between mt-2 pt-2 border-t border-surface-container-high/60">
+                  <span class="font-mono text-[9px] text-tertiary">ROE: TIGHT // RURAL</span>
+                  <button onclick="SimulationApp.loadScenarioById('SCEN-03'); SimulationApp.switchTab('radar');" class="bg-primary/20 hover:bg-primary text-primary hover:text-on-primary px-2.5 py-1 rounded font-mono text-[10px] font-bold transition-colors">LAUNCH</button>
+                </div>
+              </div>
+
+              <!-- Drill 04 -->
+              <div class="bg-surface-container p-3 rounded border border-surface-container-highest flex flex-col justify-between hover:border-primary/50 transition-colors">
+                <div>
+                  <div class="flex items-center justify-between mb-1">
+                    <span class="font-mono text-xs font-bold text-on-surface">Drill 04: Pincer Swarm Infiltration</span>
+                    <span class="font-mono text-[9px] px-1.5 py-0.5 rounded bg-error/20 text-error font-bold">HARD</span>
+                  </div>
+                  <p class="font-mono text-[10px] text-on-surface-variant line-clamp-2">Four coordinated multirotors converging simultaneously from NE and NW sectors to overwhelm EW.</p>
+                </div>
+                <div class="flex items-center justify-between mt-2 pt-2 border-t border-surface-container-high/60">
+                  <span class="font-mono text-[9px] text-tertiary">ROE: HOSTILE // URBAN</span>
+                  <button onclick="SimulationApp.loadScenarioById('SCEN-04'); SimulationApp.switchTab('radar');" class="bg-primary/20 hover:bg-primary text-primary hover:text-on-primary px-2.5 py-1 rounded font-mono text-[10px] font-bold transition-colors">LAUNCH</button>
+                </div>
+              </div>
+
+              <!-- Drill 05 -->
+              <div class="bg-surface-container p-3 rounded border border-surface-container-highest flex flex-col justify-between hover:border-primary/50 transition-colors">
+                <div>
+                  <div class="flex items-center justify-between mb-1">
+                    <span class="font-mono text-xs font-bold text-on-surface">Drill 05: Saturation Swarm Wave</span>
+                    <span class="font-mono text-[9px] px-1.5 py-0.5 rounded bg-error/20 text-error font-bold">EXPERT</span>
+                  </div>
+                  <p class="font-mono text-[10px] text-on-surface-variant line-clamp-2">Massive 7-drone saturation assault across all vectors with kamikaze suicide payloads.</p>
+                </div>
+                <div class="flex items-center justify-between mt-2 pt-2 border-t border-surface-container-high/60">
+                  <span class="font-mono text-[9px] text-tertiary">ROE: WEAPONS_FREE // COASTAL</span>
+                  <button onclick="SimulationApp.loadScenarioById('SCEN-05'); SimulationApp.switchTab('radar');" class="bg-primary/20 hover:bg-primary text-primary hover:text-on-primary px-2.5 py-1 rounded font-mono text-[10px] font-bold transition-colors">LAUNCH</button>
+                </div>
+              </div>
+
+              <!-- Drill 06 -->
+              <div class="bg-surface-container p-3 rounded border border-surface-container-highest flex flex-col justify-between hover:border-primary/50 transition-colors">
+                <div>
+                  <div class="flex items-center justify-between mb-1">
+                    <span class="font-mono text-xs font-bold text-on-surface">Drill 06: Decoy-Led Ambush</span>
+                    <span class="font-mono text-[9px] px-1.5 py-0.5 rounded bg-error/20 text-error font-bold">HARD</span>
+                  </div>
+                  <p class="font-mono text-[10px] text-on-surface-variant line-clamp-2">Chaff decoy deployed to draw fire while stealth autonomous drone sneaks in low altitude.</p>
+                </div>
+                <div class="flex items-center justify-between mt-2 pt-2 border-t border-surface-container-high/60">
+                  <span class="font-mono text-[9px] text-tertiary">ROE: STRICT // RURAL</span>
+                  <button onclick="SimulationApp.loadScenarioById('SCEN-06'); SimulationApp.switchTab('radar');" class="bg-primary/20 hover:bg-primary text-primary hover:text-on-primary px-2.5 py-1 rounded font-mono text-[10px] font-bold transition-colors">LAUNCH</button>
+                </div>
+              </div>
+
+              <!-- Drill 07 -->
+              <div class="bg-surface-container p-3 rounded border border-surface-container-highest flex flex-col justify-between hover:border-primary/50 transition-colors">
+                <div>
+                  <div class="flex items-center justify-between mb-1">
+                    <span class="font-mono text-xs font-bold text-on-surface">Drill 07: Heavy Rain Sensor Wash</span>
+                    <span class="font-mono text-[9px] px-1.5 py-0.5 rounded bg-secondary/20 text-secondary font-bold">MEDIUM</span>
+                  </div>
+                  <p class="font-mono text-[10px] text-on-surface-variant line-clamp-2">Precipitation degrades optical and radar returns. Rely on acoustic harmonics and RF waterfall.</p>
+                </div>
+                <div class="flex items-center justify-between mt-2 pt-2 border-t border-surface-container-high/60">
+                  <span class="font-mono text-[9px] text-tertiary">ROE: TIGHT // RAIN</span>
+                  <button onclick="SimulationApp.loadScenarioById('SCEN-07'); SimulationApp.switchTab('radar');" class="bg-primary/20 hover:bg-primary text-primary hover:text-on-primary px-2.5 py-1 rounded font-mono text-[10px] font-bold transition-colors">LAUNCH</button>
+                </div>
+              </div>
+
+              <!-- Drill 08 -->
+              <div class="bg-surface-container p-3 rounded border border-surface-container-highest flex flex-col justify-between hover:border-primary/50 transition-colors">
+                <div>
+                  <div class="flex items-center justify-between mb-1">
+                    <span class="font-mono text-xs font-bold text-on-surface">Drill 08: Zero-Vis Dense Fog Strike</span>
+                    <span class="font-mono text-[9px] px-1.5 py-0.5 rounded bg-error/20 text-error font-bold">HARD</span>
+                  </div>
+                  <p class="font-mono text-[10px] text-on-surface-variant line-clamp-2">Dense fog masks hostile fixed-wing UAVs. Optical sensors blind; use FLIR thermal contrast.</p>
+                </div>
+                <div class="flex items-center justify-between mt-2 pt-2 border-t border-surface-container-high/60">
+                  <span class="font-mono text-[9px] text-tertiary">ROE: DEFCON 2 // FOG</span>
+                  <button onclick="SimulationApp.loadScenarioById('SCEN-08'); SimulationApp.switchTab('radar');" class="bg-primary/20 hover:bg-primary text-primary hover:text-on-primary px-2.5 py-1 rounded font-mono text-[10px] font-bold transition-colors">LAUNCH</button>
+                </div>
+              </div>
+
+              <!-- Drill 09 -->
+              <div class="bg-surface-container p-3 rounded border border-surface-container-highest flex flex-col justify-between hover:border-primary/50 transition-colors">
+                <div>
+                  <div class="flex items-center justify-between mb-1">
+                    <span class="font-mono text-xs font-bold text-on-surface">Drill 09: Desert Sandstorm Infiltration</span>
+                    <span class="font-mono text-[9px] px-1.5 py-0.5 rounded bg-error/20 text-error font-bold">EXPERT</span>
+                  </div>
+                  <p class="font-mono text-[10px] text-on-surface-variant line-clamp-2">Airborne sand creates heavy radar clutter and RF attenuation. High cognitive stress drill.</p>
+                </div>
+                <div class="flex items-center justify-between mt-2 pt-2 border-t border-surface-container-high/60">
+                  <span class="font-mono text-[9px] text-tertiary">ROE: CAUTION // SANDSTORM</span>
+                  <button onclick="SimulationApp.loadScenarioById('SCEN-09'); SimulationApp.switchTab('radar');" class="bg-primary/20 hover:bg-primary text-primary hover:text-on-primary px-2.5 py-1 rounded font-mono text-[10px] font-bold transition-colors">LAUNCH</button>
+                </div>
+              </div>
+
+              <!-- Drill 10 -->
+              <div class="bg-surface-container p-3 rounded border border-surface-container-highest flex flex-col justify-between hover:border-primary/50 transition-colors">
+                <div>
+                  <div class="flex items-center justify-between mb-1">
+                    <span class="font-mono text-xs font-bold text-on-surface">Drill 10: Night Thermal Hunting</span>
+                    <span class="font-mono text-[9px] px-1.5 py-0.5 rounded bg-secondary/20 text-secondary font-bold">MEDIUM</span>
+                  </div>
+                  <p class="font-mono text-[10px] text-on-surface-variant line-clamp-2">Pitch black night environment. Hostile multicopters running blacked-out nav lights.</p>
+                </div>
+                <div class="flex items-center justify-between mt-2 pt-2 border-t border-surface-container-high/60">
+                  <span class="font-mono text-[9px] text-tertiary">ROE: TIGHT // NIGHT</span>
+                  <button onclick="SimulationApp.loadScenarioById('SCEN-10'); SimulationApp.switchTab('radar');" class="bg-primary/20 hover:bg-primary text-primary hover:text-on-primary px-2.5 py-1 rounded font-mono text-[10px] font-bold transition-colors">LAUNCH</button>
+                </div>
+              </div>
+
+              <!-- Drill 11 -->
+              <div class="bg-surface-container p-3 rounded border border-surface-container-highest flex flex-col justify-between hover:border-primary/50 transition-colors">
+                <div>
+                  <div class="flex items-center justify-between mb-1">
+                    <span class="font-mono text-xs font-bold text-on-surface">Drill 11: Coastal Shoreline Defense</span>
+                    <span class="font-mono text-[9px] px-1.5 py-0.5 rounded bg-error/20 text-error font-bold">HARD</span>
+                  </div>
+                  <p class="font-mono text-[10px] text-on-surface-variant line-clamp-2">Naval base perimeter protection against seaborne launched autonomous drone swarm.</p>
+                </div>
+                <div class="flex items-center justify-between mt-2 pt-2 border-t border-surface-container-high/60">
+                  <span class="font-mono text-[9px] text-tertiary">ROE: WEAPONS_HOLD // COASTAL</span>
+                  <button onclick="SimulationApp.loadScenarioById('SCEN-11'); SimulationApp.switchTab('radar');" class="bg-primary/20 hover:bg-primary text-primary hover:text-on-primary px-2.5 py-1 rounded font-mono text-[10px] font-bold transition-colors">LAUNCH</button>
+                </div>
+              </div>
+
+              <!-- Drill 12 -->
+              <div class="bg-surface-container p-3 rounded border border-surface-container-highest flex flex-col justify-between hover:border-primary/50 transition-colors">
+                <div>
+                  <div class="flex items-center justify-between mb-1">
+                    <span class="font-mono text-xs font-bold text-on-surface">Drill 12: High-Density Swarm Siege</span>
+                    <span class="font-mono text-[9px] px-1.5 py-0.5 rounded bg-error/20 text-error font-bold">EXPERT</span>
+                  </div>
+                  <p class="font-mono text-[10px] text-on-surface-variant line-clamp-2">Maximum intensity test: 10 hostile tracks with mixed EW jamming, decoys, and diving FPVs.</p>
+                </div>
+                <div class="flex items-center justify-between mt-2 pt-2 border-t border-surface-container-high/60">
+                  <span class="font-mono text-[9px] text-tertiary">ROE: DEFCON 1 // URBAN</span>
+                  <button onclick="SimulationApp.loadScenarioById('SCEN-12'); SimulationApp.switchTab('radar');" class="bg-primary/20 hover:bg-primary text-primary hover:text-on-primary px-2.5 py-1 rounded font-mono text-[10px] font-bold transition-colors">LAUNCH</button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Right: Visual Scenario Builder (Col 3) -->
+          <div class="bg-surface-container-lowest p-4 rounded-md border border-surface-container-high flex flex-col gap-4">
+            <div class="flex items-center justify-between border-b border-surface-container-high pb-2">
+              <span class="font-mono text-xs text-primary font-bold uppercase tracking-wider flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[16px]">tune</span>
+                VISUAL SCENARIO BUILDER
+              </span>
+              <span class="font-mono text-[10px] text-on-surface-variant">PROCEDURAL</span>
+            </div>
+
+            <div class="flex flex-col gap-3 font-mono text-xs">
+              <div>
+                <label class="text-[10px] text-on-surface-variant block mb-1">TERRAIN PROFILE:</label>
+                <select class="w-full bg-surface-container p-2 rounded border border-surface-container-highest text-on-surface text-xs" id="scenTerrainSelect">
+                  <option value="urban">Urban FOB (Protected Ammo/HQ)</option>
+                  <option value="rural">Rural / Open Field Outpost</option>
+                  <option value="coastal">Coastal Shoreline / Naval Base</option>
+                </select>
+              </div>
+
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label class="text-[10px] text-on-surface-variant block mb-1">TIME OF DAY:</label>
+                  <select class="w-full bg-surface-container p-2 rounded border border-surface-container-highest text-on-surface text-xs" id="scenTimeSelect">
+                    <option value="night">Night (Thermal FLIR)</option>
+                    <option value="dusk">Dusk (Low Light)</option>
+                    <option value="day">Daylight Clear</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="text-[10px] text-on-surface-variant block mb-1">WEATHER:</label>
+                  <select class="w-full bg-surface-container p-2 rounded border border-surface-container-highest text-on-surface text-xs" id="scenWeatherSelect">
+                    <option value="clear">Clear Visibility</option>
+                    <option value="rain">Heavy Rain</option>
+                    <option value="fog">Zero-Vis Fog</option>
+                    <option value="sandstorm">Desert Sandstorm</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex items-center justify-between text-[10px] text-on-surface-variant mb-1">
+                  <span>SWARM SIZE (1-12 DRONES):</span>
+                  <span class="text-primary font-bold" id="swarmSizeValLabel">5</span>
+                </div>
+                <input type="range" min="1" max="12" value="5" class="w-full accent-primary" id="scenSwarmSizeSlider" oninput="document.getElementById('swarmSizeValLabel').textContent = this.value"/>
+              </div>
+
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label class="text-[10px] text-on-surface-variant block mb-1">SWARM TACTICS:</label>
+                  <select class="w-full bg-surface-container p-2 rounded border border-surface-container-highest text-on-surface text-xs" id="scenTacticsSelect">
+                    <option value="pincer">Pincer Attack</option>
+                    <option value="saturation">Saturation Wave</option>
+                    <option value="decoy_led">Decoy-Led Ambush</option>
+                    <option value="staggered">Staggered Waves</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="text-[10px] text-on-surface-variant block mb-1">DIFFICULTY:</label>
+                  <select class="w-full bg-surface-container p-2 rounded border border-surface-container-highest text-on-surface text-xs" id="scenDifficultySelect">
+                    <option value="MEDIUM">MEDIUM</option>
+                    <option value="EASY">EASY</option>
+                    <option value="HARD">HARD</option>
+                    <option value="EXPERT">EXPERT</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="p-2.5 rounded bg-surface-container border border-surface-container-highest flex flex-col gap-1">
+                <span class="text-[9px] text-on-surface-variant">GENERATED DNA IDENTIFIER:</span>
+                <span class="font-mono text-[10px] text-tertiary truncate font-bold" id="generatedThreatDnaLabel">READY TO BUILD</span>
+              </div>
+
+              <button class="bg-primary text-on-primary py-2.5 rounded font-mono text-xs font-bold hover:bg-primary/90 flex items-center justify-center gap-1.5 shadow-md" onclick="InstructorConsole.buildCustomScenario()">
+                <span class="material-symbols-outlined text-[16px]">build_circle</span>
+                BUILD & LAUNCH SCENARIO
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- =============================================================== -->
+      <!-- SUB-PANEL 2: LIVE DOCTRINE & STRESS INTERVENTIONS               -->
+      <!-- =============================================================== -->
+      <div id="instructor-sub-doctrine" class="hidden flex-col gap-4">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          
+          <!-- Left: Real-time Interventions (Col 1 & 2) -->
+          <div class="lg:col-span-2 bg-surface-container-lowest p-4 rounded-md border border-surface-container-high flex flex-col gap-4">
+            <div class="flex items-center justify-between border-b border-surface-container-high pb-2">
+              <span class="font-mono text-xs text-secondary font-bold uppercase tracking-wider flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[16px]">bolt</span>
+                REAL-TIME INSTRUCTOR STRESS INTERVENTIONS
+              </span>
+              <span class="font-mono text-[10px] text-error font-bold animate-pulse">LIVE OPERATOR INJECTION</span>
+            </div>
+
+            <p class="font-mono text-xs text-on-surface-variant">Inject sudden mechanical faults, atmospheric changes, or decoy waves into the active drill to test operator resilience and cognitive recovery under stress.</p>
+
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+              <button class="bg-surface-container p-3 rounded border border-error/40 text-error hover:bg-error/10 font-bold font-mono text-xs flex flex-col items-center gap-1.5 text-center transition-colors" onclick="InstructorConsole.injectIntervention('jam_failure')">
+                <span class="material-symbols-outlined text-[20px]">warning</span>
+                FAIL RF JAMMER (15s)
+              </button>
+              <button class="bg-surface-container p-3 rounded border border-secondary/40 text-secondary hover:bg-secondary/10 font-bold font-mono text-xs flex flex-col items-center gap-1.5 text-center transition-colors" onclick="InstructorConsole.injectIntervention('sudden_decoys')">
+                <span class="material-symbols-outlined text-[20px]">radar</span>
+                SPAWN SUDDEN DECOYS
+              </button>
+              <button class="bg-surface-container p-3 rounded border border-tertiary/40 text-tertiary hover:bg-tertiary/10 font-bold font-mono text-xs flex flex-col items-center gap-1.5 text-center transition-colors" onclick="InstructorConsole.injectIntervention('weather_degradation')">
+                <span class="material-symbols-outlined text-[20px]">foggy</span>
+                INJECT ZERO-VIS FOG
+              </button>
+              <button class="bg-surface-container p-3 rounded border border-error/40 text-error hover:bg-error/10 font-bold font-mono text-xs flex flex-col items-center gap-1.5 text-center transition-colors" onclick="InstructorConsole.injectIntervention('evac_alarm')">
+                <span class="material-symbols-outlined text-[20px]">campaign</span>
+                TRIGGER EVAC ALARM
+              </button>
+            </div>
+
+            <!-- Live Operator Biometrics & Cognitive Stress Telemetry -->
+            <div class="mt-2 p-3 rounded bg-surface-container border border-surface-container-highest flex flex-col gap-2">
+              <span class="font-mono text-xs text-primary font-bold flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[16px]">monitor_heart</span>
+                OPERATOR COGNITIVE LOAD & VITAL TELEMETRY (LIVE STRESS)
+              </span>
+              <div class="grid grid-cols-3 gap-3 font-mono text-xs">
+                <div class="bg-surface-container-lowest p-2 rounded border border-surface-container-high">
+                  <span class="text-[9px] text-on-surface-variant block">NASA-TLX WORKLOAD:</span>
+                  <span class="text-sm font-bold text-primary" id="instructorTlxLabel">34.5 / 100</span>
+                </div>
+                <div class="bg-surface-container-lowest p-2 rounded border border-surface-container-high">
+                  <span class="text-[9px] text-on-surface-variant block">OPERATOR HEART RATE:</span>
+                  <span class="text-sm font-bold text-secondary" id="instructorBpmLabel">74 BPM</span>
+                </div>
+                <div class="bg-surface-container-lowest p-2 rounded border border-surface-container-high">
+                  <span class="text-[9px] text-on-surface-variant block">HRV RESILIENCE SCORE:</span>
+                  <span class="text-sm font-bold text-tertiary" id="instructorHrvLabel">65 / 100</span>
                 </div>
               </div>
             </div>
-
-            <!-- Radar Crosshair lines -->
-            <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-30">
-              <div class="w-full h-[1px] bg-outline-variant"></div>
-              <div class="h-full w-[1px] bg-outline-variant absolute"></div>
-              <div class="w-full h-[1px] bg-outline-variant rotate-45"></div>
-              <div class="w-full h-[1px] bg-outline-variant -rotate-45"></div>
-            </div>
-
-            <!-- Radar Sweeper Animation -->
-            <div class="absolute inset-0 pointer-events-none">
-              <div class="w-full h-full rounded-full origin-center animate-[spin_4s_linear_infinite]" style="background: conic-gradient(from 0deg, rgba(78, 222, 163, 0.30) 0deg, rgba(78, 222, 163, 0) 60deg);"></div>
-            </div>
-
-            <!-- Central Base Array -->
-            <div class="absolute w-5 h-5 bg-primary text-on-primary rounded-sm flex items-center justify-center shadow-lg z-20" title="DEFENDED BASE ARRAY">
-              <span class="material-symbols-outlined text-[12px] font-bold">security</span>
-            </div>
-
-            <!-- Dynamic Targets Layer -->
-            <div class="absolute inset-0 z-20" id="radar-targets-layer"></div>
-
-            <!-- Animated Visual FX Layer (Missile Tracers, Shockwaves, Explosions) -->
-            <canvas class="absolute inset-0 w-full h-full pointer-events-none z-25" id="radar-fx-canvas"></canvas>
-
-            <!-- Bottom Left/Right Diagnostics from Stitch Screen 1 -->
-            <div class="absolute bottom-2 left-2 z-10 bg-surface-container-high/80 px-2 py-1 rounded flex flex-col gap-0.5 text-[9px] font-mono">
-              <span class="text-on-surface-variant">PITCH: +02.4° // ROLL: -00.8°</span>
-              <span class="text-tertiary">NOISE FLOOR: -108 dBm</span>
-            </div>
-            <div class="absolute bottom-2 right-2 z-10 bg-surface-container-high/80 px-2 py-1 rounded text-right text-[9px] font-mono">
-              <span class="text-secondary font-bold">DEPOT S7: 380M DIST</span>
-            </div>
           </div>
 
-          <!-- Jammer Detected Alert Vector Banner from Screen 1 -->
-          <div class="bg-surface-container p-2.5 rounded flex items-center justify-between text-on-surface border border-surface-container-high">
-            <div class="flex items-center gap-2 min-w-0">
-              <span class="material-symbols-outlined text-error text-[18px]">cell_tower</span>
-              <div class="min-w-0 font-mono">
-                <span class="text-[10px] text-error font-bold uppercase block">JAMMER DETECTED // VECTOR NL-8492</span>
-                <p class="text-[9px] text-on-surface-variant truncate">Frequency hopping on 433/915 MHz band targeting armory safe locks</p>
-              </div>
-            </div>
-            <span class="font-mono text-[9px] text-secondary bg-surface-container-high px-2 py-1 rounded font-bold whitespace-nowrap">-42 dBm HIGH</span>
-          </div>
-
-          <!-- Command Quick Action Buttons -->
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 font-mono text-xs pt-2 border-t border-surface-container-high">
-            <button class="bg-primary text-on-primary py-2 px-3 rounded font-bold uppercase flex items-center justify-center gap-1.5 shadow active:scale-[0.99] transition-transform" onclick="triggerScrambleAction()">
-              <span class="material-symbols-outlined text-[18px]">rocket_launch</span>
-              <span>SCRAMBLE KINETIC INTERCEPT</span>
-            </button>
-            <button class="bg-secondary-container text-on-secondary-container py-2 px-3 rounded font-bold uppercase flex items-center justify-center gap-1.5 shadow active:scale-[0.99] transition-transform" onclick="triggerJammerAction()">
-              <span class="material-symbols-outlined text-[18px]">wifi_protected_setup</span>
-              <span>ENABLE C-BAND RF JAMMER</span>
-            </button>
-            <button class="bg-surface-container-high text-on-surface py-2 px-3 rounded font-bold uppercase flex items-center justify-center gap-1.5 shadow active:scale-[0.99] transition-transform" onclick="triggerLockdownAction()">
-              <span class="material-symbols-outlined text-[18px]">lock</span>
-              <span>DEPOT LOCKDOWN</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Live Target Telemetry Panel (Col 3) -->
-        <div class="bg-surface-container rounded-md p-4 border border-surface-container-high flex flex-col gap-3 shadow-xl">
-          <div class="flex items-center justify-between border-b border-surface-container-high pb-2 font-mono text-xs">
-            <span class="font-bold text-on-surface flex items-center gap-1.5">
-              <span class="material-symbols-outlined text-primary text-[16px]">crosshair</span>
-              TARGET TRACK TELEMETRY
-            </span>
-            <span class="text-tertiary font-mono" id="target-lock-id">LOCK: FPV-STRIKE-01</span>
-          </div>
-
-          <!-- Selected Target Details Card -->
-          <div class="bg-surface-container-lowest p-3 rounded border border-error/30 flex flex-col gap-2 font-mono text-xs">
-            <div class="flex items-center justify-between text-error font-bold">
-              <span id="tgt-class-label">CLASSIFICATION: KINETIC STRIKER FPV</span>
-              <span class="bg-error/20 px-1.5 py-0.5 rounded text-[10px]">PRIORITY 1</span>
-            </div>
-            <div class="grid grid-cols-2 gap-2 text-[11px] text-on-surface-variant">
-              <div>RANGE: <span class="text-on-surface font-bold" id="tgt-range">342M</span></div>
-              <div>BEARING: <span class="text-on-surface font-bold" id="tgt-azimuth">046°</span></div>
-              <div>SPEED: <span class="text-on-surface font-bold" id="tgt-speed">42.5 M/S</span></div>
-              <div>ALTITUDE: <span class="text-on-surface font-bold" id="tgt-alt">28.4M AGL</span></div>
-              <div>THREAT SCORE: <span class="text-error font-bold" id="tgt-threat-score">94.2 / 100</span></div>
-              <div>CLOSING RATE: <span class="text-error font-bold" id="tgt-closing">+38.2 M/S</span></div>
-            </div>
-          </div>
-
-          <!-- AI Tactical Advisor & Voice Alert Widget -->
-          <div class="bg-surface-container-high p-3 rounded border border-tertiary/30 flex flex-col gap-2 font-mono text-xs">
-            <div class="flex items-center justify-between text-tertiary font-bold">
-              <span class="flex items-center gap-1">
-                <span class="material-symbols-outlined text-[16px]">psychology</span>
-                AI TACTICAL ADVISOR & VOICE
+          <!-- Right: Doctrine Rules & ROE Configurator (Col 3) -->
+          <div class="bg-surface-container-lowest p-4 rounded-md border border-surface-container-high flex flex-col gap-3">
+            <div class="flex items-center justify-between border-b border-surface-container-high pb-2">
+              <span class="font-mono text-xs text-primary font-bold uppercase tracking-wider flex items-center gap-1">
+                <span class="material-symbols-outlined text-[16px]">gavel</span>
+                DOCTRINE & ROE EDITOR
               </span>
-              <button class="text-[10px] text-primary flex items-center gap-0.5 hover:underline" onclick="speakVoiceAlert()">
-                <span class="material-symbols-outlined text-[12px]">volume_up</span>
-                <span>SPEAK ALERT</span>
-              </button>
+              <span class="font-mono text-[9px] text-tertiary">LIVE HOT-RELOAD</span>
             </div>
-            <p class="text-[11px] text-on-surface-variant leading-relaxed" id="ai-recommendation">
-              Small RCS suggests micro-multirotor or FPV; C-band RF jammer will sever C2 telemetry link with zero collateral risk.
-            </p>
-            <div class="flex gap-2 mt-1">
-              <button class="flex-1 bg-tertiary text-on-tertiary-container py-1.5 rounded font-bold text-[11px] hover:bg-tertiary-container transition-all" onclick="executeQuickEngage('jam')">ENGAGE RF JAMMER</button>
-              <button class="flex-1 bg-error text-on-error py-1.5 rounded font-bold text-[11px] hover:bg-error-container transition-all" onclick="executeQuickEngage('kinetic')">FIRE INTERCEPTOR</button>
+
+            <div class="flex flex-col gap-3 max-h-[480px] overflow-y-auto pr-1" id="doctrineRulesContainer">
+              <!-- Dynamically populated from backend -->
             </div>
-          </div>
-
-          <!-- Active Swarm Target Queue -->
-          <div class="flex-1 flex flex-col gap-1.5 overflow-y-auto max-h-[180px] font-mono text-[11px]" id="swarm-target-queue">
-            <!-- Populated via JS -->
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- TAB 2: DRONE FPV PURSUIT & COCKPIT HUD INTERCEPT SIMULATOR (STITCH SCREEN 2) -->
-    <section class="tab-content flex-col gap-4" id="tab-fpv">
-      
-      <!-- HUD Top Flight Tape & System Readouts -->
-      <div class="w-full bg-surface-container-lowest rounded-lg p-3 shadow-xl flex flex-col gap-2 font-mono">
-        <div class="flex items-center justify-between text-xs">
-          <div class="flex items-center gap-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-primary animate-ping"></span>
-            <span class="text-primary font-bold uppercase tracking-wider">GARUDA-FPV // INTERCEPT PURSUIT COCKPIT</span>
-          </div>
-          <div class="flex items-center gap-3 text-xs">
-            <span class="text-tertiary">LATENCY: 4.8ms</span>
-            <span class="text-on-surface-variant">BAT: 88% [19.8V]</span>
-            <span class="text-primary font-bold">LINK: AES-256 GCM</span>
-          </div>
-        </div>
-
-        <!-- Tactical Compass Heading Tape -->
-        <div class="relative w-full h-8 bg-surface-container-high rounded overflow-hidden flex items-center justify-center">
-          <div class="absolute inset-y-0 w-0.5 bg-primary z-20 shadow-[0_0_8px_rgba(78,222,163,0.8)]"></div>
-          <div class="flex items-center gap-8 text-xs text-on-surface-variant tracking-widest uppercase" id="fpv-compass-tape">
-            <span class="opacity-40">020</span>
-            <span class="opacity-60">030</span>
-            <span class="text-primary font-bold bg-surface-container px-2 py-0.5 rounded border border-primary/40">048° NE</span>
-            <span class="opacity-60">060</span>
-            <span class="opacity-40">070</span>
-          </div>
-          <div class="absolute bottom-0 inset-x-0 h-1 flex justify-between px-4 opacity-50">
-            <div class="w-0.5 h-full bg-primary"></div>
-            <div class="w-0.5 h-full bg-on-surface-variant"></div>
-            <div class="w-0.5 h-full bg-primary"></div>
-            <div class="w-0.5 h-full bg-on-surface-variant"></div>
-            <div class="w-0.5 h-full bg-primary"></div>
           </div>
         </div>
       </div>
 
-      <!-- Main Simulated FPV Viewer & Tactical HUD Screen -->
-      <div class="relative w-full h-[400px] rounded-xl overflow-hidden bg-surface-container-lowest shadow-2xl flex items-center justify-center border border-surface-container-high" id="fpv-viewport-container">
+      <!-- =============================================================== -->
+      <!-- SUB-PANEL 3: AFTER-ACTION COHORT ANALYSIS & DOSSIERS            -->
+      <!-- =============================================================== -->
+      <div id="instructor-sub-analysis" class="hidden flex-col gap-4">
         
-        <!-- Camera Sensor Background Image with Atmospheric FLIR Simulation -->
-        <div class="absolute inset-0 bg-cover bg-center opacity-55 mix-blend-screen scale-105 transition-all duration-500" id="fpv-viewport-bg" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAaKqwPJ4Wfy3NZ99v0w72jiyARdF60BSJkUzj6JH_r4ecFvc2m7ITKvkYOafyNDMbbj38-qyZATwvghnkSx8u-H3bpJ6Mnua6gHSNvvEJkQcD0eDCpakqPrb3AJURforN6YE6IiCv-juoIgnOfGNEW6gbFmOJJAzAIHxtapOhCBxIIA6sDGCCY5RkHLcRvbbmzYF_EDiUAqK0LIvMJXTMxTo9o1cHRr9MfC9XrlykvvChfzJaRkoXX')"></div>
-
-        <!-- Vignette and Scanline Overlays -->
-        <div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest/90 via-transparent to-surface-container-lowest/80 pointer-events-none"></div>
-        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-transparent via-surface-container-lowest/40 to-surface-container-lowest/90 pointer-events-none"></div>
-
-        <!-- HUD Pitch Ladder / Artificial Horizon (Phosphor Green SVG) -->
-        <div class="absolute inset-0 flex items-center justify-center pointer-events-none" id="fpv-pitch-ladder">
-          <svg class="w-56 h-56 text-primary/70" fill="none" viewBox="0 0 200 200">
-            <!-- Center Reticle Cross -->
-            <circle cx="100" cy="100" fill="currentColor" r="4"></circle>
-            <circle cx="100" cy="100" r="18" stroke="currentColor" stroke-dasharray="2 2" stroke-width="1.2"></circle>
-            <!-- Pitch Bars -->
-            <path d="M55 70 L90 70 L90 75" stroke="currentColor" stroke-width="1.5"></path>
-            <path d="M145 70 L110 70 L110 75" stroke="currentColor" stroke-width="1.5"></path>
-            <text class="font-mono text-[9px]" fill="currentColor" x="40" y="73">+10</text>
-            <path d="M65 100 L90 100" stroke="currentColor" stroke-width="1.5"></path>
-            <path d="M135 100 L110 100" stroke="currentColor" stroke-width="1.5"></path>
-            <path d="M55 130 L90 130 L90 125" stroke="currentColor" stroke-width="1.5"></path>
-            <path d="M145 130 L110 130 L110 125" stroke="currentColor" stroke-width="1.5"></path>
-            <text class="font-mono text-[9px]" fill="currentColor" x="40" y="133">-10</text>
-          </svg>
-        </div>
-
-        <!-- Left HUD Tape: Airspeed IAS -->
-        <div class="absolute left-3 inset-y-12 w-16 flex flex-col justify-between items-start pointer-events-none z-10 font-mono">
-          <div class="bg-surface-container-highest/90 backdrop-blur-md px-2 py-1 rounded text-left border border-surface-container-high">
-            <span class="text-[9px] text-tertiary block">IAS KM/H</span>
-            <span class="text-base text-primary font-bold leading-none" id="fpv-speed-val">142</span>
-          </div>
-          <div class="flex flex-col gap-1.5 opacity-60">
-            <div class="w-4 h-0.5 bg-primary"></div>
-            <div class="w-2.5 h-0.5 bg-on-surface-variant"></div>
-            <div class="w-4 h-0.5 bg-primary"></div>
-            <div class="w-2.5 h-0.5 bg-on-surface-variant"></div>
-            <div class="w-6 h-0.5 bg-primary shadow-[0_0_6px_rgba(78,222,163,0.8)]"></div>
-            <div class="w-2.5 h-0.5 bg-on-surface-variant"></div>
-            <div class="w-4 h-0.5 bg-primary"></div>
-          </div>
-          <div class="bg-surface-container-high/90 px-1.5 py-0.5 rounded text-left border border-surface-container-high">
-            <span class="text-[8px] text-on-surface-variant block">THR</span>
-            <span class="text-xs text-primary font-semibold">82%</span>
-          </div>
-        </div>
-
-        <!-- Right HUD Tape: Altitude & Climb -->
-        <div class="absolute right-3 inset-y-12 w-16 flex flex-col justify-between items-end pointer-events-none z-10 font-mono">
-          <div class="bg-surface-container-highest/90 backdrop-blur-md px-2 py-1 rounded text-right border border-surface-container-high">
-            <span class="text-[9px] text-tertiary block">ALT MSL</span>
-            <span class="text-base text-primary font-bold leading-none" id="fpv-alt-val">112<span class="text-[10px]">M</span></span>
-          </div>
-          <div class="flex flex-col items-end gap-1.5 opacity-60">
-            <div class="w-4 h-0.5 bg-primary"></div>
-            <div class="w-2.5 h-0.5 bg-on-surface-variant"></div>
-            <div class="w-6 h-0.5 bg-primary shadow-[0_0_6px_rgba(78,222,163,0.8)]"></div>
-            <div class="w-2.5 h-0.5 bg-on-surface-variant"></div>
-            <div class="w-4 h-0.5 bg-primary"></div>
-            <div class="w-2.5 h-0.5 bg-on-surface-variant"></div>
-            <div class="w-4 h-0.5 bg-primary"></div>
-          </div>
-          <div class="bg-surface-container-high/90 px-1.5 py-0.5 rounded text-right border border-surface-container-high">
-            <span class="text-[8px] text-on-surface-variant block">V/S</span>
-            <span class="text-xs text-tertiary font-semibold">+3.4 M/S</span>
-          </div>
-        </div>
-
-        <!-- Real-Time Object Tracking Reticle (Hostile Drone Pursuit) -->
-        <div class="absolute top-1/4 left-1/3 w-36 h-36 pointer-events-none transition-all duration-300 transform -translate-x-4 -translate-y-2 z-20 font-mono" id="fpv-target-box">
-          <!-- High-visibility Red Tactical Brackets -->
-          <div class="absolute top-0 left-0 w-3.5 h-3.5 border-t-2 border-l-2 border-error"></div>
-          <div class="absolute top-0 right-0 w-3.5 h-3.5 border-t-2 border-r-2 border-error"></div>
-          <div class="absolute bottom-0 left-0 w-3.5 h-3.5 border-b-2 border-l-2 border-error"></div>
-          <div class="absolute bottom-0 right-0 w-3.5 h-3.5 border-b-2 border-r-2 border-error"></div>
-          <!-- Target Center Lock Dot -->
-          <div class="absolute inset-0 m-auto w-2.5 h-2.5 rounded-full bg-error animate-ping"></div>
-          <!-- Live Vector Lead Line -->
-          <svg class="absolute inset-0 w-full h-full overflow-visible">
-            <line stroke="#ffb4ab" stroke-dasharray="3 3" stroke-width="1.5" x1="72" x2="110" y1="72" y2="40"></line>
-          </svg>
-          <!-- Target Classification & Telemetry Floating Card -->
-          <div class="absolute -top-12 -left-6 bg-error-container/95 text-on-error-container px-2 py-1 rounded shadow-lg backdrop-blur-sm min-w-[175px] border border-error/50">
-            <div class="flex items-center justify-between">
-              <span class="text-[9px] font-bold text-error uppercase tracking-wider" id="fpv-reticle-target-title">TARGET LOCKED [01]</span>
-              <span class="text-[8px] font-mono text-on-error-container">TTI: 4.2S</span>
-            </div>
-            <span class="text-[10px] text-on-error font-extrabold block truncate" id="fpv-reticle-drone-id">ROGUE-OCTO-X</span>
-          </div>
-          <div class="absolute -bottom-10 -right-4 bg-surface-container-lowest/90 px-2 py-0.5 rounded shadow flex flex-col items-end border border-surface-container-high">
-            <span class="text-[9px] text-error font-bold tracking-tight" id="fpv-reticle-range">RNG: 184M // CLOSING</span>
-            <span class="text-[8px] text-secondary font-semibold">AZ: 046° EL: -4°</span>
-          </div>
-        </div>
-
-        <!-- Camera HUD Corner Metrics -->
-        <div class="absolute top-3 left-3 flex flex-col font-mono text-[9px] text-primary/80 gap-0.5 z-10">
-          <span>CAM: EO-ZOOM 3.4X</span>
-          <span class="text-tertiary">STABILIZER: 3-AXIS GYRO OK</span>
-        </div>
-        <div class="absolute top-3 right-3 flex flex-col items-end font-mono text-[9px] text-on-surface-variant gap-0.5 z-10">
-          <span class="text-secondary font-bold">MIL-STD-2525D</span>
-          <span>ENCRYPTION: AES-256 GCM</span>
-        </div>
-      </div>
-
-      <!-- Target Intel & Threat Summary Banner -->
-      <div class="w-full bg-surface-container rounded-lg p-3 flex items-center justify-between shadow-md border border-surface-container-high font-mono text-xs">
-        <div class="flex items-center gap-3 min-w-0">
-          <div class="w-9 h-9 rounded bg-error-container/40 flex items-center justify-center shrink-0 border border-error/40">
-            <span class="material-symbols-outlined text-error text-[20px]">warning</span>
-          </div>
-          <div class="flex flex-col min-w-0">
-            <div class="flex items-center gap-2">
-              <span class="text-error font-bold uppercase">PAYLOAD CONFIRMED</span>
-              <span class="bg-error/20 text-error px-1.5 py-0.5 rounded text-[9px] font-mono font-bold">PRIORITY 1</span>
-            </div>
-            <p class="text-[11px] text-on-surface-variant truncate">
-              Stolen FOB Cryptographic Hardware Module detected in hostile sling cradle.
-            </p>
-          </div>
-        </div>
-        <div class="flex flex-col items-end shrink-0 pl-2">
-          <span class="text-primary font-bold text-sm" id="fpv-summary-range">184.2 M</span>
-          <span class="text-[9px] text-on-surface-variant">RADAR RANGE</span>
-        </div>
-      </div>
-
-      <!-- Sensor & FLIR Controls Quick Bar -->
-      <div class="grid grid-cols-3 gap-2 w-full font-mono text-xs">
-        <button class="bg-surface-container-high hover:bg-surface-container-highest transition-colors rounded p-2.5 flex items-center justify-center gap-2 border border-surface-container-highest" id="flir-toggle-btn" onclick="toggleFLIRMode()">
-          <span class="material-symbols-outlined text-tertiary text-[20px]">thermostat</span>
-          <div class="flex flex-col text-left">
-            <span class="text-[8px] text-on-surface-variant leading-none">SENSOR OPTICS</span>
-            <span class="text-[11px] text-tertiary font-bold leading-tight" id="flir-status-label">FLIR: OFF</span>
-          </div>
-        </button>
-        <div class="bg-surface-container-high rounded p-2.5 flex items-center justify-center gap-2 border border-surface-container-highest">
-          <span class="material-symbols-outlined text-primary text-[20px]">track_changes</span>
-          <div class="flex flex-col text-left">
-            <span class="text-[8px] text-on-surface-variant leading-none">LRF 905NM LASER</span>
-            <span class="text-[11px] text-primary font-bold leading-tight">ACTIVE</span>
-          </div>
-        </div>
-        <div class="bg-surface-container-high rounded p-2.5 flex items-center justify-center gap-2 border border-surface-container-highest">
-          <span class="material-symbols-outlined text-secondary text-[20px]">air</span>
-          <div class="flex flex-col text-left">
-            <span class="text-[8px] text-on-surface-variant leading-none">WIND SHEAR</span>
-            <span class="text-[11px] text-secondary font-bold leading-tight">14KT NW</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Neutralizer Selection Suite (Screen 2) -->
-      <div class="flex flex-col gap-2 font-mono text-xs">
-        <div class="flex items-center justify-between px-1">
-          <span class="text-on-surface-variant uppercase tracking-wider font-bold">COUNTER-THEFT INTERCEPT ARMAMENT</span>
-          <span class="text-[10px] text-primary font-mono font-bold">BAY: ARMED</span>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-2" id="fpv-weapon-group">
+        <div class="bg-surface-container-lowest p-4 rounded-md border border-surface-container-high flex flex-col gap-4" id="aarReportPanel">
           
-          <!-- Weapon 1: Pneumatic Net Gun -->
-          <div class="weapon-card active bg-surface-container rounded-lg p-3 flex items-center justify-between cursor-pointer transition-all border border-primary" data-weapon="net" onclick="selectFPVWeapon('net')">
-            <div class="flex items-center gap-2.5">
-              <div class="w-8 h-8 rounded bg-primary-container text-on-primary-container flex items-center justify-center">
-                <span class="material-symbols-outlined text-[18px]">grid_4x4</span>
-              </div>
-              <div class="flex flex-col">
-                <span class="font-bold text-primary tracking-tight">PNEUMATIC NET GUN</span>
-                <span class="text-[9px] text-on-surface-variant">Dual-Kevlar Mesh // Soft Capture</span>
-              </div>
-            </div>
-            <span class="bg-primary/20 text-primary px-1.5 py-0.5 rounded text-[9px] font-bold">READY</span>
-          </div>
-
-          <!-- Weapon 2: Directed RF EMP Burst -->
-          <div class="weapon-card bg-surface-container rounded-lg p-3 flex items-center justify-between cursor-pointer transition-all border border-surface-container-high hover:border-tertiary" data-weapon="emp" onclick="selectFPVWeapon('emp')">
-            <div class="flex items-center gap-2.5">
-              <div class="w-8 h-8 rounded bg-surface-container-high text-tertiary flex items-center justify-center">
-                <span class="material-symbols-outlined text-[18px]">bolt</span>
-              </div>
-              <div class="flex flex-col">
-                <span class="font-bold text-on-surface tracking-tight">DIRECTED RF EMP BURST</span>
-                <span class="text-[9px] text-on-surface-variant">2.4/5.8 GHz Controller Disruptor</span>
-              </div>
-            </div>
-            <span class="bg-tertiary/20 text-tertiary px-1.5 py-0.5 rounded text-[9px] font-bold">CAP 100%</span>
-          </div>
-
-          <!-- Weapon 3: Kinetic Hard-Kill Ramming -->
-          <div class="weapon-card bg-surface-container rounded-lg p-3 flex items-center justify-between cursor-pointer transition-all border border-surface-container-high hover:border-secondary" data-weapon="ram" onclick="selectFPVWeapon('ram')">
-            <div class="flex items-center gap-2.5">
-              <div class="w-8 h-8 rounded bg-surface-container-high text-secondary flex items-center justify-center">
-                <span class="material-symbols-outlined text-[18px]">crisis_alert</span>
-              </div>
-              <div class="flex flex-col">
-                <span class="font-bold text-on-surface tracking-tight">KINETIC HARD-KILL RAM</span>
-                <span class="text-[9px] text-on-surface-variant">Carbon Bumper Impact Wedge</span>
-              </div>
-            </div>
-            <span class="bg-secondary/20 text-secondary px-1.5 py-0.5 rounded text-[9px] font-bold">VEC LOCK</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Tactical Touch Flight Stick Simulation Overlay & Weapon Trigger -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 font-mono text-xs">
-        
-        <!-- Left Stick -->
-        <div class="bg-surface-container rounded-lg p-3 flex items-center justify-between border border-surface-container-high">
-          <div class="flex items-center gap-3">
-            <div class="relative w-16 h-16 rounded-full bg-surface-container-lowest flex items-center justify-center shadow-inner cursor-pointer" onclick="jiggleFlightStick()">
-              <div class="absolute inset-0 flex items-center justify-center opacity-30 pointer-events-none">
-                <div class="w-full h-0.5 bg-on-surface-variant"></div>
-                <div class="h-full w-0.5 bg-on-surface-variant absolute"></div>
-              </div>
-              <div class="w-8 h-8 rounded-full bg-surface-bright shadow-lg flex items-center justify-center transition-transform duration-100" id="stick-thumb">
-                <span class="material-symbols-outlined text-[14px] text-primary">navigation</span>
-              </div>
-            </div>
-            <div class="flex flex-col text-[10px] text-on-surface-variant">
-              <span class="font-bold text-on-surface">THROTTLE / YAW CONTROL</span>
-              <span class="text-primary" id="stick-coords">X: +0.02 | Y: +0.82</span>
-              <span>AUTO-STABILIZER: ON</span>
-            </div>
-          </div>
-          <div class="flex flex-col items-end gap-1 text-[9px] text-on-surface-variant">
-            <span>PITCH LOCK: <strong class="text-primary">ACTIVE</strong></span>
-            <span>ROLL TRIM: <strong class="text-tertiary">0.0°</strong></span>
-            <span class="text-secondary">DOPPLER: SYNC</span>
-          </div>
-        </div>
-
-        <!-- Emergency Override Intercept Trigger Button -->
-        <button class="relative w-full bg-error text-on-error rounded-lg flex items-center justify-center gap-2 font-bold text-sm tracking-wider shadow-xl overflow-hidden uppercase active:scale-[0.98] transition-all py-4 border border-error/50" id="fpv-intercept-btn" onclick="executeFPVIntercept()">
-          <span class="material-symbols-outlined text-[24px]">radio_button_checked</span>
-          <span id="fpv-btn-text">FIRE NET CAPTURE & RECOVER</span>
-        </button>
-
-      </div>
-    </section>
-
-    <!-- TAB 3: GAP 2 REALISTIC RFVIEW PROPAGATION & MULTI-SPECTRAL SENSORS (STITCH SCREEN 3) -->
-    <section class="tab-content flex-col gap-4" id="tab-sensors">
-      
-      <!-- Fleet Armament Image Cards (Preserved from Stitch UI) -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        
-        <!-- Fleet Item 1: BHISMA SKY-PATROL HEXA -->
-        <div class="flex flex-col bg-surface-container rounded-lg overflow-hidden border border-surface-container-high shadow-md">
-          <div class="relative w-full h-36 bg-surface-container-lowest">
-            <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBuuIrHgD8rAQKfjs80Bs2NyNEOS71LBD15M81qaR_h_TsteRqGAq8LVpzJIjtb_s46JKgARfirop9JHPQOLjmmR6qveboT3hB28kwFTwlTqk_bPyeOnD2B0mkwzMwavqyhgoKe9FeLSQ9ma0o_x4xsDt9gkmqLIeft6bNWbQ3oHGmZcdAPA8NYsPVz5PHuAZO49z99g47eIaBAV3ZmECeLVbvbtuUjIIAAfRavDH_GtCyu0LrJj9IQ"/>
-            <div class="absolute inset-0 bg-gradient-to-t from-surface-container via-surface-container/30 to-transparent"></div>
-            <div class="absolute top-2 left-2 flex items-center gap-1 bg-surface-container-lowest/90 backdrop-blur-md px-2 py-0.5 rounded font-mono text-[9px]">
-              <span class="w-1.5 h-1.5 bg-secondary rounded-full animate-ping"></span>
-              <span class="text-secondary font-bold">AIRBORNE // PERIMETER</span>
-            </div>
-            <div class="absolute top-2 right-2 bg-surface-container-lowest/90 backdrop-blur-md px-2 py-0.5 rounded font-mono text-[9px] text-on-surface">74% PWR</div>
-          </div>
-          <div class="p-3 flex flex-col gap-1 font-mono text-xs">
-            <h3 class="font-bold text-on-surface uppercase">BHISMA SKY-PATROL HEXA</h3>
-            <p class="text-[11px] text-on-surface-variant">Role: Deep perimeter surveillance, contraband detection & acoustic tracking.</p>
-            <button class="w-full bg-secondary/20 text-secondary border border-secondary/40 font-mono text-[10px] font-bold py-1.5 rounded hover:bg-secondary/40 transition-all mt-1 flex items-center justify-center gap-1" onclick="deployFleetAsset('bhisma')">
-              <span class="material-symbols-outlined text-[12px]">radar</span>
-              <span>LAUNCH ACOUSTIC PATROL</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Fleet Item 2: VAJRA-EMP DISRUPTOR -->
-        <div class="flex flex-col bg-surface-container rounded-lg overflow-hidden border border-surface-container-high shadow-md">
-          <div class="relative w-full h-36 bg-surface-container-lowest">
-            <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBMfRK058bM1CJ7SAoMaqfabJnKvv_amL_Fg5WPU1EUiDELpMbkCEtFtEB0idXQ0CByfgJnKNQW0wz9vOgpAbh5yYaep0d98qToOGVAcEabZzW8Ziqmp-lTmYTPVt7Z1fSQEfr37iEKwzxJXrqwX0LeLIuaRrpQ2KCaa-d6nCzejOINQBfNUFcw13hPUFDsCSDfQ9Yka38mvUCSDBA3cORUt56xCk-MSzCSRSR479HQn94isE6VZmyM"/>
-            <div class="absolute inset-0 bg-gradient-to-t from-surface-container via-surface-container/30 to-transparent"></div>
-            <div class="absolute top-2 left-2 flex items-center gap-1 bg-surface-container-lowest/90 backdrop-blur-md px-2 py-0.5 rounded font-mono text-[9px]">
-              <span class="w-1.5 h-1.5 bg-tertiary rounded-full"></span>
-              <span class="text-tertiary font-bold">RECHARGE // PAD 4</span>
-            </div>
-            <div class="absolute top-2 right-2 bg-surface-container-lowest/90 backdrop-blur-md px-2 py-0.5 rounded font-mono text-[9px] text-tertiary">DIRECTED EW</div>
-          </div>
-          <div class="p-3 flex flex-col gap-1 font-mono text-xs">
-            <h3 class="font-bold text-on-surface uppercase">VAJRA-EMP DISRUPTOR</h3>
-            <p class="text-[11px] text-on-surface-variant">Role: Non-kinetic counter-theft electronic warfare, motor kill-switch & GNSS jammer.</p>
-            <button class="w-full bg-tertiary/20 text-tertiary border border-tertiary/40 font-mono text-[10px] font-bold py-1.5 rounded hover:bg-tertiary/40 transition-all mt-1 flex items-center justify-center gap-1" onclick="deployFleetAsset('vajra')">
-              <span class="material-symbols-outlined text-[12px]">flash_on</span>
-              <span>DISCHARGE DIRECTED EMP PULSE</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Fleet Item 3: GARUDA FAST INTERCEPTOR -->
-        <div class="flex flex-col bg-surface-container rounded-lg overflow-hidden border border-surface-container-high shadow-md">
-          <div class="relative w-full h-36 bg-surface-container-lowest">
-            <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3wnd-VEa6nsdwUmFYe6_pKbRhRNWv_ei9zKRDKPFO7fCz2WuKNfHcn8xKsOniVtIGoHBYXzJpw94_ypk8cPqMCVxrFlzz-r-Tn23crYynNpgB1i3k2YfKlV6wru0DnF0Z8aMJAslFao_gH09HzvI9rVhd1-KhdYxOC44tj-zPLHwQ8IZEUnDJ6AXDrGTInUhQDhIhvyyVpp3H2yeGgbRvfeUAu7271QTWmiI5PRQ-bKN37M2tqX4k"/>
-            <div class="absolute inset-0 bg-gradient-to-t from-surface-container via-surface-container/30 to-transparent"></div>
-            <div class="absolute top-2 left-2 flex items-center gap-1 bg-surface-container-lowest/90 backdrop-blur-md px-2 py-0.5 rounded font-mono text-[9px]">
-              <span class="w-1.5 h-1.5 bg-primary rounded-full animate-ping"></span>
-              <span class="text-primary font-bold">FAST INTERCEPT // READY</span>
-            </div>
-            <div class="absolute top-2 right-2 bg-surface-container-lowest/90 backdrop-blur-md px-2 py-0.5 rounded font-mono text-[9px] text-primary">KINETIC NET</div>
-          </div>
-          <div class="p-3 flex flex-col gap-1 font-mono text-xs">
-            <h3 class="font-bold text-on-surface uppercase">GARUDA FAST INTERCEPTOR</h3>
-            <p class="text-[11px] text-on-surface-variant">Role: Dual pneumatic ballistic net deployment & high-speed kinetic intercept.</p>
-            <button class="w-full bg-primary/20 text-primary border border-primary/40 font-mono text-[10px] font-bold py-1.5 rounded hover:bg-primary/40 transition-all mt-1 flex items-center justify-center gap-1" onclick="deployFleetAsset('garuda')">
-              <span class="material-symbols-outlined text-[12px]">rocket_launch</span>
-              <span>SCRAMBLE BALLISTIC INTERCEPTOR</span>
-            </button>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Live RF Spectrum Canvas & Bayesian Fusion Banner -->
-      <div class="bg-surface-container-lowest rounded-md p-4 border border-surface-container-high shadow-xl flex flex-col gap-3 font-mono text-xs">
-        <div class="flex items-center justify-between border-b border-surface-container-high pb-2">
-          <span class="font-bold text-tertiary flex items-center gap-1.5">
-            <span class="material-symbols-outlined text-[18px]">graphic_eq</span>
-            GAP 2: LIVE RF SPECTRUM FFT & DIRECTIONAL JAMMER DENSITY ANALYZER
-          </span>
-          <span class="text-primary font-bold">BAYESIAN FUSION: 94.8% OPTIMAL</span>
-        </div>
-
-        <!-- Custom HTML5 Live Signal Spectrum Canvas -->
-        <div class="relative w-full h-48 bg-surface-container-lowest rounded border border-surface-container-high overflow-hidden">
-          <canvas id="rf-spectrum-canvas" class="w-full h-full"></canvas>
-          <div class="absolute top-2 left-2 text-[10px] text-tertiary">2.400 GHz - 2.500 GHz ISM BAND (REAL-TIME FFT)</div>
-          <div class="absolute top-2 right-2 text-[10px] text-secondary">JAMMING PEAK: 2.450 GHz @ +18.5 dBi</div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
-          <div class="bg-surface-container p-3 rounded border border-surface-container-high">
-            <div class="text-[10px] text-on-surface-variant">RFVIEW PATH LOSS (FSPL)</div>
-            <div class="text-lg font-bold text-tertiary mt-1" id="rf-fspl">84.2 dB</div>
-          </div>
-          <div class="bg-surface-container p-3 rounded border border-surface-container-high">
-            <div class="text-[10px] text-on-surface-variant">GNSS PSEUDORANGE ERROR</div>
-            <div class="text-lg font-bold text-secondary mt-1" id="rf-gnss-error">±14.8M DRIFT</div>
-          </div>
-          <div class="bg-surface-container p-3 rounded border border-surface-container-high">
-            <div class="text-[10px] text-on-surface-variant">BAYESIAN FUSION CONFIDENCE</div>
-            <div class="text-lg font-bold text-primary mt-1" id="rf-fusion-conf">94.8%</div>
-          </div>
-          <div class="bg-surface-container p-3 rounded border border-surface-container-high">
-            <div class="text-[10px] text-on-surface-variant">SIGNAL-TO-JAMMING (SJNR)</div>
-            <div class="text-lg font-bold text-error mt-1" id="rf-sjnr">-4.2 dB (LINK DENIED)</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Directional EW Jammer Controls -->
-      <div class="bg-surface-container rounded-md p-4 border border-surface-container-high shadow-xl flex flex-col gap-4 font-mono text-xs">
-        <div class="flex items-center justify-between border-b border-surface-container-high pb-2">
-          <span class="font-bold text-primary">RF PROPAGATION & JAMMER PARAMETER CONTROLS</span>
-          <span class="text-secondary font-bold" id="ew-status-label">EMITTER: ACTIVE</span>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="flex flex-col gap-3">
+          <!-- Top Scorecard Header -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-surface-container-high pb-4 gap-3">
             <div>
-              <div class="flex justify-between text-[11px] text-on-surface-variant mb-1">
-                <span>JAMMER POWER OUTPUT (WATTS):</span>
-                <span class="text-primary font-bold" id="val-power">150 W</span>
+              <div class="flex items-center gap-2">
+                <span class="font-mono text-xs text-primary font-bold uppercase tracking-wider">AFTER-ACTION REPORT (AAR) & COHORT DOSSIER</span>
+                <span class="font-mono text-xs px-2 py-0.5 rounded bg-primary/20 text-primary font-bold" id="aarGrade">GRADE: PENDING</span>
               </div>
-              <input class="w-full accent-primary" id="slider-power" max="500" min="10" oninput="updateEWParam()" type="range" value="150"/>
+              <h2 class="text-xl font-extrabold text-on-surface tracking-tight mt-1" id="aarScore">1000 / 1000</h2>
             </div>
 
-            <div>
-              <div class="flex justify-between text-[11px] text-on-surface-variant mb-1">
-                <span>CENTER FREQUENCY (MHz):</span>
-                <span class="text-tertiary font-bold" id="val-freq">2400 MHz (2.4 GHz ISM)</span>
+            <div class="flex flex-wrap items-center gap-4 font-mono text-xs">
+              <div>
+                <span class="text-[10px] text-on-surface-variant block">AVG DETECTION LATENCY:</span>
+                <span class="text-on-surface font-bold text-sm" id="aarDetTime">-- s</span>
               </div>
-              <input class="w-full accent-tertiary" id="slider-freq" max="5800" min="900" oninput="updateEWParam()" step="100" type="range" value="2400"/>
-            </div>
-
-            <div>
-              <div class="flex justify-between text-[11px] text-on-surface-variant mb-1">
-                <span>ANTENNA BEAMWIDTH (DEGREES):</span>
-                <span class="text-secondary font-bold" id="val-beam">35° (HIGH-GAIN HORN)</span>
+              <div>
+                <span class="text-[10px] text-on-surface-variant block">CLASSIFICATION ACCURACY:</span>
+                <span class="text-primary font-bold text-sm" id="aarClassAccuracy">-- %</span>
               </div>
-              <input class="w-full accent-secondary" id="slider-beam" max="120" min="15" oninput="updateEWParam()" type="range" value="35"/>
+              <div class="flex items-center gap-2">
+                <button class="bg-primary text-on-primary px-3 py-1.5 rounded font-mono text-xs font-bold hover:bg-primary/90 flex items-center gap-1 shadow-sm" onclick="SimulationApp.downloadScorecard()">
+                  <span class="material-symbols-outlined text-[15px]">description</span>
+                  DOWNLOAD SCORECARD (PDF)
+                </button>
+                <button class="bg-surface-container text-tertiary px-3 py-1.5 rounded font-mono text-xs font-bold border border-tertiary/40 hover:bg-tertiary/20 flex items-center gap-1" onclick="window.print()">
+                  <span class="material-symbols-outlined text-[15px]">print</span>
+                  PRINT DOSSIER
+                </button>
+                <button class="bg-surface-container text-primary px-3 py-1.5 rounded font-mono text-xs font-bold border border-primary/40 hover:bg-primary/20 flex items-center gap-1" onclick="window.AAREngine && window.AAREngine.exportCSV ? window.AAREngine.exportCSV() : SimulationApp.showToast('CSV Exported to Download queue', 'success')">
+                  <span class="material-symbols-outlined text-[15px]">download</span>
+                  EXPORT CSV
+                </button>
+              </div>
             </div>
           </div>
 
-          <div class="bg-surface-container-lowest p-3 rounded border border-surface-container-high flex flex-col gap-2">
-            <div class="text-tertiary font-bold">PROPAGATION & DIRECTIONAL GAIN</div>
-            <div class="grid grid-cols-2 gap-2 text-[11px]">
-              <div>DIRECTIONAL GAIN G(θ): <span class="text-on-surface font-bold" id="rf-gain">+18.5 dBi</span></div>
-              <div>TERRAIN MASKING LOSS: <span class="text-on-surface font-bold" id="rf-los">0.0 dB (CLEAR LOS)</span></div>
-            </div>
-            <button class="w-full bg-primary text-on-primary font-mono text-xs font-bold py-2 rounded mt-2 shadow hover:bg-primary-container transition-all" onclick="applyEWBroadcast()">BROADCAST RF JAMMING WAVEFRONT</button>
+          <!-- 6 Weighted Metrics Breakdown Grid -->
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2" id="aarMetricBreakdown">
+            <!-- Dynamically populated -->
           </div>
-        </div>
-      </div>
-    </section>
 
-    <!-- TAB 4: GAP 3 COGNITIVE LOAD & DYNAMIC TRIAGE SCORING GRAPH -->
-    <section class="tab-content flex-col gap-4" id="tab-triage">
-      
-      <!-- Cognitive Workload & Stress Tracker Card -->
-      <div class="bg-surface-container rounded-md p-4 border border-surface-container-high shadow-xl flex flex-col gap-3">
-        <div class="flex items-center justify-between font-mono text-xs border-b border-surface-container-high pb-2">
-          <span class="font-bold text-secondary flex items-center gap-1.5">
-            <span class="material-symbols-outlined text-[18px]">favorite</span>
-            GAP 3: COGNITIVE WORKLOAD (NASA-TLX) & PHYSIOLOGICAL SENSOR MATRIX (HRV / EYE-TRACKING)
-          </span>
-          <span class="text-error font-bold" id="cognitive-overload-label">COGNITIVE OVERLOAD: 28% (NORMAL)</span>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-3 font-mono text-xs">
-          <div class="bg-surface-container-lowest p-3 rounded border border-surface-container-high">
-            <div class="text-[10px] text-on-surface-variant">NASA-TLX INDEX</div>
-            <div class="text-xl font-bold text-tertiary mt-1" id="cog-nasa-tlx">32.4 / 100</div>
-          </div>
-          <div class="bg-surface-container-lowest p-3 rounded border border-surface-container-high">
-            <div class="text-[10px] text-on-surface-variant">HEART RATE VARIABILITY (HRV STRESS)</div>
-            <div class="text-xl font-bold text-primary mt-1" id="cog-hrv">68ms (STABLE)</div>
-          </div>
-          <div class="bg-surface-container-lowest p-3 rounded border border-surface-container-high">
-            <div class="text-[10px] text-on-surface-variant">PUPIL DILATION / EYE-TRACK FOCUS</div>
-            <div class="text-xl font-bold text-secondary mt-1" id="cog-eye">3.8mm (TARGET LOCKED)</div>
-          </div>
-          <div class="bg-surface-container-lowest p-3 rounded border border-surface-container-high">
-            <div class="text-[10px] text-on-surface-variant">OUT-OF-SEQUENCE PENALTY</div>
-            <div class="text-xl font-bold text-error mt-1" id="cog-penalty">-0 PTS (OPTIMAL)</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Triage Queue Table -->
-      <div class="bg-surface-container rounded-md p-4 border border-surface-container-high shadow-xl flex flex-col gap-3">
-        <div class="font-mono text-xs font-bold text-on-surface">DYNAMIC DECISION-TREE TRIAGE QUEUE (50+ DRONE SATURATION ATTACK)</div>
-        <div class="overflow-x-auto">
-          <table class="w-full font-mono text-xs text-left border-collapse">
-            <thead>
-              <tr class="bg-surface-container-high text-on-surface-variant border-b border-surface-container-high">
-                <th class="p-2">TARGET ID</th>
-                <th class="p-2">TYPE</th>
-                <th class="p-2">RANGE</th>
-                <th class="p-2">CLOSING SPEED</th>
-                <th class="p-2">TRIAGE THREAT SCORE</th>
-                <th class="p-2">ACTION</th>
-              </tr>
-            </thead>
-            <tbody id="triage-table-body">
-              <!-- Populated via JS -->
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-    </section>
-
-    <!-- TAB 5: GAP 4 ANTI-ROTE-LEARNING AI SCENARIO DIRECTOR -->
-    <section class="tab-content flex-col gap-4" id="tab-director">
-      
-      <div class="bg-surface-container rounded-md p-4 border border-surface-container-high shadow-xl flex flex-col gap-4 font-mono text-xs">
-        <div class="flex items-center justify-between border-b border-surface-container-high pb-2">
-          <span class="font-bold text-tertiary flex items-center gap-1.5">
-            <span class="material-symbols-outlined text-[18px]">psychology</span>
-            GAP 4: ANTI-ROTE-LEARNING AI SCENARIO DIRECTOR & SELF-PLAY RL TACTICS GENERATOR
-          </span>
-          <span class="text-primary font-bold">STATE: PROCEDURAL ADAPTING</span>
-        </div>
-
-        <p class="text-on-surface-variant">
-          Implements a Left-4-Dead style AI Scenario Director enforcing physical flight constraints (6G ceilings, pitch/roll limiters) while procedurally generating non-repetitive adversarial tactics using Reinforcement Learning self-play.
-        </p>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-          <div class="bg-surface-container-lowest p-3 rounded border border-surface-container-high">
-            <div class="text-[10px] text-on-surface-variant">ADVERSARIAL DOCTRINE</div>
-            <div class="text-base font-bold text-secondary mt-1">HIGH-LOW SPLIT & SATURATION SCREEN</div>
-          </div>
-          <div class="bg-surface-container-lowest p-3 rounded border border-surface-container-high">
-            <div class="text-[10px] text-on-surface-variant">PHYSICAL FLIGHT CONSTRAINTS</div>
-            <div class="text-base font-bold text-primary mt-1">MAX 6G // 270°/S TURN CAP</div>
-          </div>
-          <div class="bg-surface-container-lowest p-3 rounded border border-surface-container-high">
-            <div class="text-[10px] text-on-surface-variant">TERRAIN CONSTRAINTS</div>
-            <div class="text-base font-bold text-tertiary mt-1">NAVMESH MASKED CONTOURS</div>
-          </div>
-        </div>
-
-        <!-- Scenario Presets -->
-        <div class="flex flex-wrap gap-2 pt-1">
-          <button class="bg-surface-container-high hover:bg-primary/20 text-primary px-3 py-1.5 rounded border border-primary/30 font-bold flex items-center gap-1 text-[11px]" onclick="regenerateProceduralScenario('saturation')">
-            <span class="material-symbols-outlined text-[14px]">grid_4x4</span>
-            <span>50+ SWARM SATURATION</span>
-          </button>
-          <button class="bg-surface-container-high hover:bg-secondary/20 text-secondary px-3 py-1.5 rounded border border-secondary/30 font-bold flex items-center gap-1 text-[11px]" onclick="regenerateProceduralScenario('night')">
-            <span class="material-symbols-outlined text-[14px]">dark_mode</span>
-            <span>NIGHT STEALTH INFILTRATION</span>
-          </button>
-          <button class="bg-surface-container-high hover:bg-tertiary/20 text-tertiary px-3 py-1.5 rounded border border-tertiary/30 font-bold flex items-center gap-1 text-[11px]" onclick="regenerateProceduralScenario('blizzard')">
-            <span class="material-symbols-outlined text-[14px]">ac_unit</span>
-            <span>HIGH-ALTITUDE BLIZZARD</span>
-          </button>
-        </div>
-
-        <button class="w-full bg-tertiary text-on-tertiary-container py-3 rounded font-bold shadow-lg hover:bg-tertiary-container transition-all uppercase flex items-center justify-center gap-2" onclick="regenerateProceduralScenario('random')">
-          <span class="material-symbols-outlined text-[18px]">autorenew</span>
-          <span>RE-GENERATE PROCEDURAL THREAT SCENARIO (PREVENT ROTE LEARNING)</span>
-        </button>
-      </div>
-
-    </section>
-
-    <!-- TAB 6: GAP 5 FORENSIC THREAT MATRIX & AFTER-ACTION REVIEW (STITCH SCREEN 4 & GAP 5) -->
-    <section class="tab-content flex-col gap-4" id="tab-aar">
-      
-      <!-- Top Forensic Summary Cards from Stitch Screen 4 -->
-      <div class="flex items-center justify-between bg-surface-container-low px-4 py-2.5 rounded-lg border border-surface-container-high font-mono text-xs">
-        <div class="flex items-center gap-2.5">
-          <span class="w-2.5 h-2.5 rounded-full bg-primary animate-ping"></span>
-          <span class="text-primary font-bold tracking-wider uppercase">DEFENSE FORENSIC MATRIX // CLASSIFIED</span>
-        </div>
-        <div class="flex items-center gap-1.5 text-on-surface-variant font-mono text-[11px]">
-          <span class="material-symbols-outlined text-[14px] text-tertiary">lock</span>
-          <span>AES-256 GCM LOGGED & AUDITED</span>
-        </div>
-      </div>
-
-      <!-- Top Metric Badges (Screen 4 + AAR) -->
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 font-mono text-xs">
-        <div class="bg-surface-container p-3 rounded-lg border border-surface-container-high flex flex-col justify-between shadow-sm relative overflow-hidden">
-          <div class="flex items-center justify-between mb-1">
-            <span class="text-[10px] text-on-surface-variant uppercase tracking-wider">24H Intercepts</span>
-            <span class="px-1.5 py-0.5 rounded bg-primary/20 text-primary text-[9px] font-bold">100% NEUT</span>
-          </div>
-          <div class="text-2xl text-primary font-bold tracking-tight">07 / 07</div>
-          <div class="text-[10px] text-on-surface-variant mt-0.5">Perimeter Zero Breached</div>
-        </div>
-
-        <div class="bg-surface-container p-3 rounded-lg border border-surface-container-high flex flex-col justify-between shadow-sm">
-          <div class="flex items-center justify-between mb-1">
-            <span class="text-[10px] text-on-surface-variant uppercase tracking-wider">OFFICER CLASS</span>
-            <span class="px-1.5 py-0.5 rounded bg-tertiary/20 text-tertiary text-[9px] font-bold">CERTIFIED</span>
-          </div>
-          <div class="text-2xl text-tertiary font-bold tracking-tight" id="aar-grade-label">RANK S</div>
-          <div class="text-[10px] text-on-surface-variant mt-0.5">Officer Class Elite</div>
-        </div>
-
-        <div class="bg-surface-container p-3 rounded-lg border border-surface-container-high flex flex-col justify-between shadow-sm">
-          <div class="text-[10px] text-on-surface-variant uppercase">MEAN TIME TO DETECT (MTTD)</div>
-          <div class="text-2xl font-bold text-primary mt-1" id="aar-mttd">1.42 SEC</div>
-          <div class="text-[10px] text-on-surface-variant mt-0.5">Autonomous Tracking</div>
-        </div>
-
-        <div class="bg-surface-container p-3 rounded-lg border border-surface-container-high flex flex-col justify-between shadow-sm">
-          <div class="text-[10px] text-on-surface-variant uppercase">TARGET DISCRIMINATION (TDI)</div>
-          <div class="text-2xl font-bold text-secondary mt-1" id="aar-tdi">92.4%</div>
-          <div class="text-[10px] text-on-surface-variant mt-0.5">Decoys Avoided</div>
-        </div>
-      </div>
-
-      <!-- Sensor Stream // Visual Intercept Feed (Screen 4) -->
-      <div class="flex flex-col gap-2 font-mono text-xs">
-        <div class="flex items-center justify-between px-1">
-          <span class="text-on-surface uppercase tracking-wider font-semibold">Sensor Stream // Visual Intercept Feed</span>
-          <span class="text-tertiary">CAM-IR 60FPS</span>
-        </div>
-        <div class="relative w-full h-44 rounded-lg overflow-hidden bg-surface-container-lowest shadow-md border border-surface-container-high">
-          <img class="w-full h-full object-cover opacity-85" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3wnd-VEa6nsdwUmFYe6_pKbRhRNWv_ei9zKRDKPFO7fCz2WuKNfHcn8xKsOniVtIGoHBYXzJpw94_ypk8cPqMCVxrFlzz-r-Tn23crYynNpgB1i3k2YfKlV6wru0DnF0Z8aMJAslFao_gH09HzvI9rVhd1-KhdYxOC44tj-zPLHwQ8IZEUnDJ6AXDrGTInUhQDhIhvyyVpp3H2yeGgbRvfeUAu7271QTWmiI5PRQ-bKN37M2tqX4k"/>
-          <div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-surface-container-lowest/30 to-transparent"></div>
-          <div class="absolute top-2 left-2 flex items-center gap-1.5 px-2 py-0.5 rounded bg-surface-container-lowest/80 backdrop-blur-sm">
-            <span class="w-2 h-2 rounded-full bg-error animate-pulse"></span>
-            <span class="text-error font-bold uppercase text-[9px]">REC // TETHER ENGAGED</span>
-          </div>
-          <div class="absolute top-2 right-2 px-1.5 py-0.5 rounded bg-surface-container-lowest/80 backdrop-blur-sm text-tertiary font-mono text-[9px]">
-            RNG: 14.2M // FLIR-ON
-          </div>
-          <div class="absolute bottom-2 left-2 right-2 flex items-center justify-between text-[10px]">
-            <span class="text-on-surface bg-surface-container-lowest/90 px-2 py-0.5 rounded font-mono">SECTOR-3 ORDNANCE WIRE-FENCE</span>
-            <span class="text-primary bg-primary/20 px-2 py-0.5 rounded font-bold uppercase">PAYLOAD SECURED</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Incident Category Filter Rail (Screen 4) -->
-      <div class="flex items-center gap-2 overflow-x-auto py-1 font-mono text-xs" id="tactical-filter-rail">
-        <button class="filter-btn active flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary text-on-primary font-bold uppercase whitespace-nowrap shadow-sm transition-all" data-filter="all" onclick="filterIncidents('all')">
-          <span class="material-symbols-outlined text-[14px]">view_list</span>
-          <span>All Incidents (07)</span>
-        </button>
-        <button class="filter-btn flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-container text-on-surface-variant hover:text-on-surface font-semibold uppercase whitespace-nowrap transition-all border border-surface-container-high" data-filter="counter-theft" onclick="filterIncidents('counter-theft')">
-          <span class="material-symbols-outlined text-[14px] text-secondary">security</span>
-          <span>Counter-Theft</span>
-        </button>
-        <button class="filter-btn flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-container text-on-surface-variant hover:text-on-surface font-semibold uppercase whitespace-nowrap transition-all border border-surface-container-high" data-filter="tamper" onclick="filterIncidents('tamper')">
-          <span class="material-symbols-outlined text-[14px] text-error">hardware</span>
-          <span>Hardware Tamper</span>
-        </button>
-        <button class="filter-btn flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-container text-on-surface-variant hover:text-on-surface font-semibold uppercase whitespace-nowrap transition-all border border-surface-container-high" data-filter="simulation" onclick="filterIncidents('simulation')">
-          <span class="material-symbols-outlined text-[14px] text-tertiary">model_training</span>
-          <span>Drill Simulations</span>
-        </button>
-      </div>
-
-      <!-- Incident Forensic Cards Container -->
-      <div class="flex flex-col gap-3 font-mono text-xs" id="incidents-container">
-        
-        <!-- Incident 1 -->
-        <article class="incident-card bg-surface-container p-3 rounded-lg flex flex-col gap-2 shadow-sm border border-surface-container-high" data-category="counter-theft">
-          <div class="flex items-start justify-between">
-            <div class="flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-primary"></span>
-              <span class="text-primary font-bold text-sm">#IN-8402</span>
-              <span class="text-on-surface-variant font-mono text-[10px]">// 12m ago</span>
-            </div>
-            <span class="px-2 py-0.5 rounded bg-primary/20 text-primary text-[10px] font-bold uppercase tracking-wider">Secured</span>
-          </div>
-          <h2 class="text-sm font-bold text-on-surface">Hostile Quadcopter Neutralized over Ordnance Perimeter</h2>
-          <p class="text-[11px] text-on-surface-variant leading-relaxed">
-            Tether net deployed at 45m MSL. Unauthorized contraband delivery neutralized before touchdown. Cargo recovered: military-spec encrypted comms transceiver unit.
-          </p>
-          <div class="flex flex-col gap-1 bg-surface-container-lowest p-2 rounded border border-surface-container-high text-[10px]">
-            <div class="flex items-center justify-between text-on-surface-variant">
-              <span class="flex items-center gap-1 text-tertiary">
-                <span class="material-symbols-outlined text-[12px]">inventory_2</span>
-                Cargo Chain of Custody
+          <!-- Middle: Skill Radar Chart + Replay Timeline Canvas -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            
+            <!-- 6-Axis Skill Radar Chart -->
+            <div class="bg-surface-container p-4 rounded border border-surface-container-highest flex flex-col gap-2">
+              <span class="font-mono text-xs text-primary font-bold flex items-center gap-1">
+                <span class="material-symbols-outlined text-[16px]">radar</span>
+                6-AXIS CADET PROFICIENCY RADAR
               </span>
-              <span class="text-primary font-bold">VAULT-KEY: #SEC-094</span>
+              <div class="relative w-full h-64 flex items-center justify-center">
+                <canvas id="skillRadarCanvas"></canvas>
+              </div>
             </div>
-            <div class="flex items-center gap-1.5 pt-0.5">
-              <span class="px-1.5 py-0.5 rounded bg-surface-container text-on-surface text-[9px]">EOD CLEARED</span>
-              <span class="px-1.5 py-0.5 rounded bg-surface-container text-on-surface text-[9px]">FREQ: 5.8 GHZ</span>
-              <span class="px-1.5 py-0.5 rounded bg-surface-container text-on-surface text-[9px]">ORIGIN: UNK-NORTH</span>
-            </div>
-          </div>
-          <div class="flex items-center justify-between pt-1">
-            <div class="flex items-center gap-1 text-on-surface-variant text-[10px]">
-              <span class="material-symbols-outlined text-[14px] text-secondary">verified</span>
-              <span>EOD Capt. K. Rathore Verified</span>
-            </div>
-            <button class="text-primary hover:underline font-bold text-[10px] uppercase flex items-center gap-0.5" onclick="triggerToast('FORENSIC LOG #IN-8402: ALL TELEMETRY & SPECTRUM TRACES VERIFIED', 'verified', 'text-primary')">
-              <span>Forensic Log</span>
-              <span class="material-symbols-outlined text-[12px]">arrow_forward</span>
-            </button>
-          </div>
-        </article>
 
-        <!-- Incident 2 -->
-        <article class="incident-card bg-surface-container p-3 rounded-lg flex flex-col gap-2 shadow-sm border border-surface-container-high" data-category="tamper">
-          <div class="flex items-start justify-between">
-            <div class="flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-secondary"></span>
-              <span class="text-secondary font-bold text-sm">#IN-8399</span>
-              <span class="text-on-surface-variant font-mono text-[10px]">// 02:14 HRS IST</span>
+            <!-- Timeline Replay Canvas & Scrubber -->
+            <div class="bg-surface-container p-4 rounded border border-surface-container-highest flex flex-col gap-2">
+              <span class="font-mono text-xs text-tertiary font-bold flex items-center gap-1">
+                <span class="material-symbols-outlined text-[16px]">history</span>
+                MISSION TIMELINE REPLAY SCRUBBER
+              </span>
+              <div class="relative w-full h-52 bg-surface-container-lowest rounded overflow-hidden border border-surface-container-high">
+                <canvas class="w-full h-full" id="aarCanvas" width="480" height="208"></canvas>
+              </div>
+              <div class="flex items-center gap-3 pt-1">
+                <span class="font-mono text-[10px] text-on-surface-variant">0s</span>
+                <input type="range" min="0" max="90" value="0" class="flex-1 accent-primary" oninput="AAREngine.setScrubberTime(this.value)"/>
+                <span class="font-mono text-[10px] text-on-surface-variant">90s</span>
+              </div>
             </div>
-            <span class="px-2 py-0.5 rounded bg-secondary-container/20 text-secondary text-[10px] font-bold uppercase tracking-wider">Spoofed & Landed</span>
           </div>
-          <h2 class="text-sm font-bold text-on-surface">Rogue Night-Hawk Drone Intercepted via GPS Spoofing</h2>
-          <p class="text-[11px] text-on-surface-variant leading-relaxed">
-            Theft vector attempted: covert aerial reconnaissance along primary radar relay array. Navigational uplink overridden by Garuda-Rakshak counter-EW, safely guided to Helipad Bravo.
-          </p>
-          <div class="flex items-center justify-between bg-surface-container-lowest p-2 rounded border border-surface-container-high text-[10px] text-on-surface-variant">
-            <div class="flex items-center gap-1">
-              <span class="material-symbols-outlined text-[14px] text-tertiary">flight_land</span>
-              <span>Target Landing: Helipad Bravo</span>
-            </div>
-            <span class="text-secondary font-bold">FIRMWARE EXTRACTED</span>
-          </div>
-          <div class="flex items-center justify-between pt-1">
-            <div class="flex items-center gap-1 text-on-surface-variant text-[10px]">
-              <span class="material-symbols-outlined text-[14px] text-primary">memory</span>
-              <span>Telemetry Dump Saved</span>
-            </div>
-            <button class="text-primary hover:underline font-bold text-[10px] uppercase flex items-center gap-0.5" onclick="triggerToast('TELEMETRY DUMP #IN-8399: GNSS DRIFT & FREQ HOP DUMP EXTRACTED', 'memory', 'text-tertiary')">
-              <span>Examine Telemetry</span>
-              <span class="material-symbols-outlined text-[12px]">arrow_forward</span>
-            </button>
-          </div>
-        </article>
 
-        <!-- Incident 3 -->
-        <article class="incident-card bg-surface-container p-3 rounded-lg flex flex-col gap-2 shadow-sm border border-surface-container-high" data-category="simulation">
-          <div class="flex items-start justify-between">
-            <div class="flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-tertiary"></span>
-              <span class="text-tertiary font-bold text-sm">#IN-8388</span>
-              <span class="text-on-surface-variant font-mono text-[10px]">// Yesterday 16:30</span>
-            </div>
-            <span class="px-2 py-0.5 rounded bg-tertiary-container/20 text-tertiary text-[10px] font-bold uppercase tracking-wider">Drill Countered</span>
+          <!-- Explainable AI Coach Debrief -->
+          <div class="bg-surface-container p-4 rounded border border-tertiary/40 flex flex-col gap-2">
+            <span class="font-mono text-xs text-tertiary font-bold flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-[18px]">psychology</span>
+              EXPLAINABLE AI TACTICAL COACH DEBRIEF
+            </span>
+            <pre class="font-mono text-xs text-on-surface leading-relaxed whitespace-pre-wrap bg-surface-container-lowest p-3 rounded border border-surface-container-highest" id="aarAIDebriefText">
+Simulated performance telemetry will appear here upon drill completion.
+            </pre>
           </div>
-          <h2 class="text-sm font-bold text-on-surface">Red-Team Simulation: Ammunition Fence Breach</h2>
-          <p class="text-[11px] text-on-surface-variant leading-relaxed">
-            Simulated multi-vector anti-theft exercise testing physical perimeter sensors and autonomous intercept swarms. Neutralized by interceptor Swarm Eagle-2 in 18.2 seconds.
-          </p>
-          <div class="flex items-center justify-between bg-surface-container-lowest p-2 rounded border border-surface-container-high text-[10px] text-on-surface-variant">
-            <div class="flex items-center gap-1">
-              <span class="material-symbols-outlined text-[14px] text-tertiary">timer</span>
-              <span>Response Velocity: 18.2s</span>
-            </div>
-            <span class="text-primary font-bold">BENCHMARK: +34% FASTER</span>
-          </div>
-          <div class="flex items-center justify-between pt-1">
-            <div class="flex items-center gap-1 text-on-surface-variant text-[10px]">
-              <span class="material-symbols-outlined text-[14px] text-tertiary">verified_user</span>
-              <span>HQ Simulation Board Approved</span>
-            </div>
-            <button class="text-primary hover:underline font-bold text-[10px] uppercase flex items-center gap-0.5" onclick="triggerToast('SIMULATION REPORT #IN-8388: EXCELLENT SWARM INTERCEPT TIME', 'task_alt', 'text-primary')">
-              <span>View Drill Log</span>
-              <span class="material-symbols-outlined text-[12px]">arrow_forward</span>
-            </button>
-          </div>
-        </article>
 
-      </div>
+          <!-- Error Heat Map -->
+          <div class="flex flex-col gap-2">
+            <span class="font-mono text-xs text-error font-bold flex items-center gap-1">
+              <span class="material-symbols-outlined text-[16px]">error</span>
+              PROCEDURAL FAULTS & COLLATERAL RISK AUDIT
+            </span>
+            <div class="flex flex-col gap-2" id="aarErrorHeatMap">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
 
-      <!-- Official Forensic Dossier Card (Screen 4) -->
-      <div class="bg-surface-container-lowest p-4 rounded-lg flex flex-col gap-2 shadow-md border border-surface-container-high font-mono text-xs">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <span class="material-symbols-outlined text-[20px] text-primary">verified</span>
-            <span class="font-bold text-sm text-on-surface">Official Forensic Dossier</span>
+          <!-- Decision Table (What You Did vs What Doctrine Recommends) -->
+          <div class="flex flex-col gap-2">
+            <span class="font-mono text-xs text-secondary font-bold">DETAILED ENGAGEMENT AUDIT (WHAT OPERATOR DID VS DOCTRINE):</span>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left font-mono text-xs">
+                <thead>
+                  <tr class="border-b border-surface-container-high text-on-surface-variant text-[10px]">
+                    <th class="p-2">TIME</th>
+                    <th class="p-2">CONTACT</th>
+                    <th class="p-2">CLASSIFICATION</th>
+                    <th class="p-2">OPERATOR ACTION</th>
+                    <th class="p-2">DOCTRINE RECOMMENDED</th>
+                    <th class="p-2">CONSEQUENCE</th>
+                    <th class="p-2">SCORE IMPACT</th>
+                  </tr>
+                </thead>
+                <tbody id="aarTableBody">
+                  <!-- Dynamically populated -->
+                </tbody>
+              </table>
+            </div>
           </div>
-          <div class="px-2 py-0.5 rounded bg-primary/20 text-primary font-bold">
-            DISA-CERT-884
+
+          <!-- Session History Table -->
+          <div class="flex flex-col gap-2 border-t border-surface-container-high pt-4">
+            <span class="font-mono text-xs text-primary font-bold">RECENT CADET DRILL SESSIONS:</span>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left font-mono text-xs">
+                <thead>
+                  <tr class="border-b border-surface-container-high text-on-surface-variant text-[10px]">
+                    <th class="p-2">SESSION</th>
+                    <th class="p-2">SCENARIO</th>
+                    <th class="p-2">SCORE</th>
+                    <th class="p-2">GRADE</th>
+                    <th class="p-2">AVG LATENCY</th>
+                    <th class="p-2">ACCURACY</th>
+                    <th class="p-2 text-right">EXPORTS</th>
+                  </tr>
+                </thead>
+                <tbody id="historyTableBody">
+                  <!-- Dynamically populated -->
+                </tbody>
+              </table>
+            </div>
           </div>
+
+          <!-- Unit Leaderboard & Cadet Comparison -->
+          <div class="flex flex-col gap-2 border-t border-surface-container-high pt-4">
+            <span class="font-mono text-xs text-primary font-bold uppercase tracking-wider flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-[16px]">leaderboard</span>
+              UNIT READINESS & CADET LEADERBOARD (14TH AIR DEFENSE REGIMENT)
+            </span>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left font-mono text-xs">
+                <thead>
+                  <tr class="border-b border-surface-container-high text-on-surface-variant text-[10px]">
+                    <th class="p-2">RANK</th>
+                    <th class="p-2">OPERATOR</th>
+                    <th class="p-2">DESIGNATION</th>
+                    <th class="p-2">UNIT</th>
+                    <th class="p-2 text-center">SESSIONS</th>
+                    <th class="p-2 text-center">AVG SCORE</th>
+                    <th class="p-2 text-center">TOP SCORE</th>
+                    <th class="p-2 text-right">ACCURACY</th>
+                  </tr>
+                </thead>
+                <tbody id="leaderboardTableBody">
+                  <!-- Dynamically populated -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
         </div>
-        <p class="text-[11px] text-on-surface-variant">
-          Complete automated chain-of-custody archive, telemetry spectrum logs, and threat actor radio footprint analysis ready for military brass dispatch.
-        </p>
-        <div class="flex items-center justify-between py-1 px-2 rounded bg-surface-container text-on-surface-variant text-[10px]">
-          <span>HASH: SHA-512/9B4F81...</span>
-          <span class="text-tertiary font-bold">TAMPER-SEAL INTACT</span>
-        </div>
-        <button class="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg bg-primary text-on-primary font-bold uppercase tracking-wider shadow hover:bg-primary-container transition-all active:scale-[0.98] mt-1" onclick="exportEncryptedReport()">
-          <span class="material-symbols-outlined text-[18px]">file_download</span>
-          <span>Export Encrypted Tactical Report (DISA-CERT)</span>
-        </button>
-      </div>
-
-      <!-- Confusion Matrix Section -->
-      <div class="bg-surface-container-lowest p-4 rounded border border-surface-container-high flex flex-col gap-2 font-mono text-xs">
-        <div class="font-bold text-on-surface">THREAT CLASSIFICATION CONFUSION MATRIX</div>
-        <div class="grid grid-cols-2 gap-3 text-center pt-2">
-          <div class="bg-primary-container/20 border border-primary/40 p-3 rounded text-primary">
-            <div class="text-[10px] uppercase">TRUE POSITIVES (KINETIC INTERCEPTS)</div>
-            <div class="text-2xl font-bold mt-1" id="aar-tp">8</div>
-          </div>
-          <div class="bg-error-container/20 border border-error/40 p-3 rounded text-error">
-            <div class="text-[10px] uppercase">FALSE POSITIVES (DECOYS WASTED)</div>
-            <div class="text-2xl font-bold mt-1" id="aar-fp">1</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Live Session Engagement Telemetry Event Log -->
-      <div class="bg-surface-container-lowest p-4 rounded border border-surface-container-high flex flex-col gap-3 font-mono text-xs">
-        <div class="flex items-center justify-between">
-          <span class="font-bold text-tertiary flex items-center gap-1.5">
-            <span class="material-symbols-outlined text-[16px]">receipt_long</span>
-            LIVE TELEMETRY ENGAGEMENT LOG (SQLITE AUDIT PERSISTED)
-          </span>
-          <span class="text-[10px] text-on-surface-variant" id="aar-log-count-label">0 EVENTS LOGGED</span>
-        </div>
-        <div class="overflow-x-auto max-h-[200px] overflow-y-auto">
-          <table class="w-full text-left border-collapse font-mono text-[11px]">
-            <thead>
-              <tr class="bg-surface-container-high text-on-surface-variant border-b border-surface-container-high">
-                <th class="p-2">T-STAMP</th>
-                <th class="p-2">TARGET ID</th>
-                <th class="p-2">WEAPON / COUNTERMEASURE</th>
-                <th class="p-2">ACTUAL CLASS</th>
-                <th class="p-2">ROE EVALUATION</th>
-                <th class="p-2">DELTA SCORE</th>
-              </tr>
-            </thead>
-            <tbody id="aar-engagement-log-body">
-              <!-- Dynamically populated via JS -->
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Export & Defense Assessment Scorecard -->
-      <div class="flex gap-3 font-mono text-xs pt-2 no-print">
-        <button class="flex-1 bg-surface-container-high text-on-surface py-2.5 rounded border border-surface-container-highest hover:bg-surface-bright transition-all" onclick="exportTelemetryJSON()">EXPORT TELEMETRY SESSION (JSON)</button>
-        <button class="flex-1 bg-secondary text-on-secondary py-2.5 rounded font-bold hover:bg-secondary-container transition-all" onclick="printDefenseScorecard()">
-          <span class="material-symbols-outlined text-[14px] align-middle">print</span>
-          PRINT DEFENSE ASSESSMENT SCORECARD
-        </button>
-        <button class="flex-1 bg-primary text-on-primary py-2.5 rounded font-bold hover:bg-primary-container transition-all" onclick="exportSQLiteDB()">EXPORT SQLITE DATABASE (.DB)</button>
       </div>
 
     </section>
-
   </main>
 
-  <!-- TOAST NOTIFICATION MODAL -->
-  <div class="fixed inset-x-4 bottom-20 bg-surface-container-highest text-on-surface p-3 rounded shadow-2xl transition-all duration-300 transform translate-y-24 opacity-0 pointer-events-none flex items-center justify-between z-50 max-w-md mx-auto border border-surface-container-high font-mono text-xs" id="toast-modal">
-    <div class="flex items-center gap-2 min-w-0">
-      <span class="material-symbols-outlined text-primary text-[20px]" id="toast-icon">check_circle</span>
-      <span class="truncate" id="toast-msg">COMMAND DIRECTIVE EXECUTED</span>
-    </div>
-    <span class="text-[9px] text-tertiary">ACK 200</span>
-  </div>
+  <!-- ===================================================================== -->
+  <!-- MODAL: TACTICAL ACCESS CONTROL & AUTHENTICATION PORTAL                 -->
+  <!-- ===================================================================== -->
+  <!-- ===================================================================== -->
+  <!-- MODAL: TACTICAL ACCESS CONTROL & DEFENSE VERIFICATION GATEWAY          -->
+  <!-- ===================================================================== -->
+  <div id="tacticalLoginModal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="bg-surface-container-lowest border border-primary/50 rounded-lg max-w-4xl w-full p-6 shadow-2xl flex flex-col gap-5 animate-in fade-in zoom-in-95 duration-150 max-h-[92vh] overflow-y-auto">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between border-b border-surface-container-high pb-3">
+        <div class="flex items-center gap-3">
+          <div class="p-2 bg-primary/20 rounded border border-primary/40 text-primary">
+            <span class="material-symbols-outlined text-[24px]">vpn_key</span>
+          </div>
+          <div>
+            <h2 class="text-base font-bold text-on-surface font-mono tracking-wider">TACTICAL ACCESS CONTROL & DEFENSE VERIFICATION GATEWAY</h2>
+            <p class="text-xs text-on-surface-variant font-mono">MIL-STD-2525D DEFENSE FORCES CLEARANCE CODE AUTHENTICATION SYSTEM</p>
+          </div>
+        </div>
+        <button id="loginModalCloseBtn" onclick="SimulationApp.closeLoginModal()" class="hidden text-on-surface-variant hover:text-on-surface p-1.5 rounded hover:bg-surface-container transition-colors" title="Close">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
 
-  <!-- BOTTOM QUICK NAV BAR (6 TACTICAL MODULES) -->
-  <nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface-container-lowest/95 backdrop-blur-xl border-t border-surface-container-high font-mono text-[10px] no-print">
-    <div class="flex justify-around items-center h-14 px-1">
-      <button class="flex flex-col items-center justify-center gap-0.5 min-w-[55px] h-11 rounded transition-colors text-primary" onclick="switchTab('radar')" id="quick-btn-radar">
-        <span class="material-symbols-outlined text-[18px]">radar</span>
-        <span class="uppercase">Radar</span>
-      </button>
-      <button class="flex flex-col items-center justify-center gap-0.5 min-w-[55px] h-11 rounded text-on-surface-variant hover:text-on-surface transition-colors" onclick="switchTab('fpv')" id="quick-btn-fpv">
-        <span class="material-symbols-outlined text-[18px]">videocam</span>
-        <span class="uppercase">FPV HUD</span>
-      </button>
-      <button class="flex flex-col items-center justify-center gap-0.5 min-w-[55px] h-11 rounded text-on-surface-variant hover:text-on-surface transition-colors" onclick="switchTab('sensors')" id="quick-btn-sensors">
-        <span class="material-symbols-outlined text-[18px]">graphic_eq</span>
-        <span class="uppercase">RF Fleet</span>
-      </button>
-      <button class="flex flex-col items-center justify-center gap-0.5 min-w-[55px] h-11 rounded text-on-surface-variant hover:text-on-surface transition-colors" onclick="switchTab('triage')" id="quick-btn-triage">
-        <span class="material-symbols-outlined text-[18px]">alt_route</span>
-        <span class="uppercase">Triage</span>
-      </button>
-      <button class="flex flex-col items-center justify-center gap-0.5 min-w-[55px] h-11 rounded text-on-surface-variant hover:text-on-surface transition-colors" onclick="switchTab('director')" id="quick-btn-director">
-        <span class="material-symbols-outlined text-[18px]">psychology</span>
-        <span class="uppercase">Director</span>
-      </button>
-      <button class="flex flex-col items-center justify-center gap-0.5 min-w-[55px] h-11 rounded text-on-surface-variant hover:text-on-surface transition-colors" onclick="switchTab('aar')" id="quick-btn-aar">
-        <span class="material-symbols-outlined text-[18px]">analytics</span>
-        <span class="uppercase">Forensics</span>
-      </button>
-    </div>
-  </nav>
+      <!-- Auth Mode Switcher: Create Account vs Sign In -->
+      <div class="flex items-center gap-2 bg-surface-container p-1 rounded-md border border-surface-container-highest font-mono text-xs">
+        <button id="auth-tab-btn-register" onclick="SimulationApp.switchAuthMode('register')" class="flex-1 py-2 rounded font-bold transition-all bg-primary text-on-primary flex items-center justify-center gap-1.5 shadow-sm">
+          <span class="material-symbols-outlined text-[16px]">person_add</span>
+          1. CREATE NEW PROFILE (DEFENSE CODE VERIFICATION)
+        </button>
+        <button id="auth-tab-btn-signin" onclick="SimulationApp.switchAuthMode('signin')" class="flex-1 py-2 rounded font-bold transition-all text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high flex items-center justify-center gap-1.5">
+          <span class="material-symbols-outlined text-[16px]">login</span>
+          2. SIGN IN / OPERATOR TERMINAL
+        </button>
+      </div>
 
-  <!-- AI CHAT ASSISTANT SLIDE-OUT DRAWER -->
-  <div id="ai-chat-drawer" class="fixed inset-y-0 right-0 w-full max-w-md bg-surface-container-lowest/95 backdrop-blur-2xl border-l border-surface-container-high shadow-2xl z-[60] transform translate-x-full transition-transform duration-300 flex flex-col font-mono text-xs">
-    
-    <!-- Drawer Header -->
-    <div class="p-3 bg-surface-container border-b border-surface-container-high flex items-center justify-between">
-      <div class="flex items-center gap-2 text-tertiary">
-        <span class="material-symbols-outlined text-[22px]">smart_toy</span>
-        <div>
-          <span class="font-bold text-on-surface text-sm uppercase block">AEGIS AI TACTICAL INSTRUCTOR</span>
-          <span class="text-[9px] text-tertiary">CONTEXT-AWARE C2 EXPLAINER</span>
+      <!-- PANEL 1: CREATE NEW ACCOUNT (REGISTER WITH DEFENSE CODE) -->
+      <div id="auth-panel-register" class="flex flex-col gap-4 font-mono text-xs">
+        <div class="bg-surface-container p-5 rounded-lg border border-primary/40 flex flex-col gap-4">
+          <div class="flex items-center justify-between border-b border-surface-container-high pb-2">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary text-[20px]">badge</span>
+              <span class="text-sm font-bold text-on-surface tracking-wider uppercase">DEFENSE FORCES IDENTITY AUTHENTICATION & ENROLLMENT</span>
+            </div>
+            <span class="text-[10px] text-tertiary font-bold">CLASSIFIED CLEARANCE</span>
+          </div>
+
+          <!-- Step 1: Armed Forces Verification Code -->
+          <div class="flex flex-col gap-2 p-3.5 bg-surface-container-lowest rounded-lg border border-primary/50">
+            <div class="flex items-center justify-between">
+              <label class="text-[11px] text-primary font-bold flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[16px]">shield</span>
+                STEP 1: ENTER SPECIAL ARMED FORCES VERIFICATION CODE:
+              </label>
+              <span class="text-[10px] text-on-surface-variant font-mono">MILITARY CLEARANCE ONLY</span>
+            </div>
+            <p class="text-[11px] text-on-surface-variant">
+              Enter your confidential military clearance code (e.g. <span class="text-primary font-bold">ARM-INST-7801</span> for Instructor or <span class="text-tertiary font-bold">ARM-TRN-1011</span> for Trainee) issued by the Command Admin.
+            </p>
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 mt-1">
+              <input type="text" id="newAccountDefenseCode" placeholder="Enter Code (e.g. ARM-INST-7801 or ARM-TRN-1011)" class="flex-1 bg-surface-container px-3 py-2 rounded border border-primary/50 text-primary font-mono text-xs font-bold uppercase tracking-wider focus:outline-none focus:ring-1 focus:ring-primary" />
+              <button onclick="SimulationApp.verifyEnteredDefenseCode()" class="px-4 py-2 bg-primary text-on-primary font-mono text-xs font-bold rounded hover:bg-primary/90 flex items-center justify-center gap-1.5 transition-transform active:scale-95 shrink-0">
+                <span class="material-symbols-outlined text-[16px]">verified</span>
+                VERIFY CLEARANCE
+              </button>
+            </div>
+            <div id="defenseCodeStatusBadge" class="hidden"></div>
+          </div>
+
+          <!-- Step 2: Profile Details -->
+          <div class="flex flex-col gap-3">
+            <div class="flex items-center justify-between">
+              <label class="text-[11px] text-on-surface font-bold">STEP 2: CONFIRM OFFICER / OPERATOR CREDENTIALS:</label>
+              <div id="verifiedRoleDisplay" class="text-xs font-bold text-on-surface-variant">Awaiting code verification</div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label class="text-[10px] text-on-surface-variant block mb-1 font-bold">OFFICER / CANDIDATE NAME:</label>
+                <input type="text" id="newAccountName" placeholder="Auto-populated or enter custom callsign" class="w-full bg-surface-container-lowest p-2 rounded border border-surface-container-highest text-on-surface font-mono text-xs focus:outline-none focus:border-primary" />
+              </div>
+              <div>
+                <label class="text-[10px] text-on-surface-variant block mb-1 font-bold">MILITARY RANK:</label>
+                <input type="text" id="newAccountRank" placeholder="e.g. Cadet, Flight Lt, Major, Col." class="w-full bg-surface-container-lowest p-2 rounded border border-surface-container-highest text-on-surface font-mono text-xs focus:outline-none focus:border-primary" />
+              </div>
+              <div>
+                <label class="text-[10px] text-on-surface-variant block mb-1 font-bold">UNIT / BASE DEPLOYMENT:</label>
+                <input type="text" id="newAccountUnit" placeholder="e.g. 14th Air Defense Regiment" class="w-full bg-surface-container-lowest p-2 rounded border border-surface-container-highest text-on-surface font-mono text-xs focus:outline-none focus:border-primary" />
+              </div>
+            </div>
+
+            <!-- Role Radios (hidden, set automatically via verified defense code) -->
+            <div class="hidden">
+              <input type="radio" name="newAccountRole" value="trainee" checked />
+              <input type="radio" name="newAccountRole" value="instructor" />
+            </div>
+          </div>
+
+          <!-- Feedback Banner -->
+          <div id="createAccountFeedback" class="hidden p-2.5 rounded font-mono text-xs"></div>
+
+          <!-- Submit Button -->
+          <div class="flex items-center justify-between pt-2 border-t border-surface-container-high">
+            <span class="text-[10px] text-on-surface-variant">Account will be authenticated against the defense roster and stored in local database.</span>
+            <button onclick="SimulationApp.submitCreateAccount()" class="bg-primary text-on-primary px-5 py-2.5 rounded font-mono text-xs font-bold hover:bg-primary/90 flex items-center gap-2 shadow-lg transition-transform active:scale-95">
+              <span class="material-symbols-outlined text-[16px]">how_to_reg</span>
+              AUTHENTICATE & ENTER SIMULATOR
+            </button>
+          </div>
         </div>
       </div>
-      <button class="text-on-surface-variant hover:text-on-surface p-1 rounded" onclick="toggleAIChatDrawer()">
-        <span class="material-symbols-outlined text-[20px]">close</span>
-      </button>
-    </div>
 
-    <!-- Mode Selector Pills (First-Time / Beginner vs Defense / Military Commander) -->
-    <div class="p-2 bg-surface-container-low border-b border-surface-container-high flex gap-1">
-      <button id="persona-btn-beginner" class="flex-1 py-1.5 px-2 rounded font-bold text-[10px] transition-all bg-tertiary text-on-tertiary-container shadow" onclick="setChatPersona('beginner')">
-        <span>🔰 1ST-TIME OPERATOR MODE</span>
-      </button>
-      <button id="persona-btn-defense" class="flex-1 py-1.5 px-2 rounded font-bold text-[10px] transition-all text-on-surface-variant hover:text-on-surface" onclick="setChatPersona('defense')">
-        <span>⚔️ DEFENSE COMMANDER MODE</span>
-      </button>
-    </div>
+      <!-- PANEL 2: SIGN IN MODE (USER CREATED PROFILES & FAST CODE LOGIN) -->
+      <div id="auth-panel-signin" class="hidden flex-col gap-5">
+        <!-- Direct Fast Login with Defense Code -->
+        <div class="p-3 bg-surface-container-lowest rounded-lg border border-primary/40 flex flex-col sm:flex-row items-center justify-between gap-3 font-mono text-xs">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary text-[20px]">vpn_key</span>
+            <div>
+              <span class="text-on-surface font-bold block">DIRECT SIGN-IN VIA DEFENSE VERIFICATION CODE:</span>
+              <span class="text-[10px] text-on-surface-variant">Instant access using your authorized Armed Forces code</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 w-full sm:w-auto">
+            <input type="text" id="fastDefenseCodeInput" placeholder="e.g. ARM-INST-7801 or ARM-TRN-1011" class="bg-surface-container px-3 py-2 rounded border border-surface-container-high text-primary font-bold text-xs w-full sm:w-64 uppercase font-mono tracking-wider focus:outline-none focus:border-primary" />
+            <button onclick="SimulationApp.loginWithDefenseCode()" class="px-4 py-2 rounded bg-primary text-on-primary font-bold text-xs hover:bg-primary/90 flex items-center gap-1.5 shrink-0 transition-transform active:scale-95">
+              <span>ENTER</span>
+              <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+            </button>
+          </div>
+        </div>
 
-    <!-- Quick Question Chips -->
-    <div class="p-2 bg-surface-container-lowest border-b border-surface-container-high flex gap-1.5 overflow-x-auto whitespace-nowrap text-[10px]">
-      <button class="bg-surface-container px-2 py-1 rounded border border-surface-container-high hover:border-tertiary text-tertiary" onclick="sendQuickPrompt('How do I operate this console step-by-step for the first time?')">
-        <span>How to operate console?</span>
-      </button>
-      <button class="bg-surface-container px-2 py-1 rounded border border-surface-container-high hover:border-tertiary text-secondary" onclick="sendQuickPrompt('What is the difference between Soft-Kill RF Jamming and Hard-Kill Kinetic Interceptor?')">
-        <span>Soft-Kill vs Hard-Kill</span>
-      </button>
-      <button class="bg-surface-container px-2 py-1 rounded border border-surface-container-high hover:border-tertiary text-primary" onclick="sendQuickPrompt('Explain RF Jamming FSPL Path Loss and Signal-to-Jamming Noise Ratio')">
-        <span>RF FSPL Physics</span>
-      </button>
-      <button class="bg-surface-container px-2 py-1 rounded border border-surface-container-high hover:border-tertiary text-error" onclick="sendQuickPrompt('What are the Rules of Engagement (ROE) for non-lethal decoys?')">
-        <span>ROE & Decoy Rules</span>
-      </button>
-    </div>
+        <!-- Two-Portal Split Grid (Saved Profiles Created By User) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          
+          <!-- Portal 1: Operator / Trainee Portal -->
+          <div class="bg-surface-container p-5 rounded-lg border border-tertiary/40 flex flex-col justify-between gap-4 relative overflow-hidden group hover:border-tertiary transition-all">
+            <div class="absolute top-0 right-0 bg-tertiary/20 text-tertiary font-mono text-[9px] px-3 py-1 font-bold rounded-bl uppercase tracking-widest border-b border-l border-tertiary/30">
+              CLEARANCE LVL 1-2
+            </div>
+            
+            <div class="flex flex-col gap-3">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-tertiary text-[22px]">person</span>
+                <h3 class="font-mono text-sm font-bold text-tertiary uppercase tracking-wider">OPERATOR / TRAINEE PORTAL</h3>
+              </div>
+              
+              <p class="font-mono text-xs text-on-surface-variant leading-relaxed">
+                For verified defense cadets and operators conducting live drone intercept drills. Access to Tactical Radar, Multi-Sensor Fusion, and Weapon Response Controls.
+              </p>
 
-    <!-- Chat Messages Scroll Area -->
-    <div class="flex-1 p-3 overflow-y-auto flex flex-col gap-3" id="ai-chat-messages">
-      <!-- Populated via JS -->
-    </div>
+              <div class="p-3 bg-surface-container-lowest rounded border border-surface-container-highest font-mono text-xs flex flex-col gap-2">
+                <span class="text-[10px] text-on-surface-variant font-bold">YOUR ENROLLED OPERATOR PROFILES:</span>
+                <div class="flex flex-col gap-1.5" id="traineeProfileList"></div>
+              </div>
 
-    <!-- Chat Input Area -->
-    <div class="p-3 bg-surface-container border-t border-surface-container-high flex gap-2">
-      <input type="text" id="ai-chat-input" class="flex-1 bg-surface-container-lowest text-on-surface px-3 py-2 rounded border border-surface-container-high focus:border-tertiary outline-none font-mono text-xs placeholder:text-on-surface-variant" placeholder="Ask AI Instructor anything about operating this system..." onkeydown="if(event.key==='Enter') sendAIChatMessage()"/>
-      <button class="bg-tertiary text-on-tertiary-container px-3.5 py-2 rounded font-bold hover:bg-tertiary-container transition-all flex items-center justify-center" onclick="sendAIChatMessage()">
-        <span class="material-symbols-outlined text-[18px]">send</span>
-      </button>
+              <ul class="font-mono text-[11px] text-on-surface-variant space-y-1 list-disc list-inside">
+                <li>Full access to 3D/2D Surveillance Radar</li>
+                <li>Thermal FLIR, RF Waterfall & Acoustic Sensors</li>
+                <li>Target Classification & Countermeasure Triage</li>
+                <li>Instant Downloadable Drill Scorecard on completion</li>
+                <li class="text-error/80">Restricted from modifying doctrine or scenario DNA</li>
+              </ul>
+            </div>
+
+            <button onclick="SimulationApp.loginTraineeFromModal()" class="w-full bg-tertiary text-on-tertiary py-2.5 rounded font-mono text-xs font-bold hover:bg-tertiary/90 flex items-center justify-center gap-2 shadow-lg transition-transform active:scale-95">
+              <span class="material-symbols-outlined text-[16px]">login</span>
+              AUTHENTICATE AS OPERATOR (DO DRILL)
+            </button>
+          </div>
+
+          <!-- Portal 2: Instructor & Admin Portal -->
+          <div class="bg-surface-container p-5 rounded-lg border border-primary/40 flex flex-col justify-between gap-4 relative overflow-hidden group hover:border-primary transition-all">
+            <div class="absolute top-0 right-0 bg-primary/20 text-primary font-mono text-[9px] px-3 py-1 font-bold rounded-bl uppercase tracking-widest border-b border-l border-primary/30">
+              CLEARANCE LVL 4-5
+            </div>
+            
+            <div class="flex flex-col gap-3">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary text-[22px]">shield_person</span>
+                <h3 class="font-mono text-sm font-bold text-primary uppercase tracking-wider">INSTRUCTOR & ADMIN PORTAL</h3>
+              </div>
+              
+              <p class="font-mono text-xs text-on-surface-variant leading-relaxed">
+                For Flight Instructors, Range Evaluators, and Base Defense Admins. Grants Dual Authority: full operational control plus the unified Instructor Command Hub.
+              </p>
+
+              <div class="p-3 bg-surface-container-lowest rounded border border-surface-container-highest font-mono text-xs flex flex-col gap-2">
+                <span class="text-[10px] text-on-surface-variant font-bold">YOUR ENROLLED INSTRUCTOR PROFILES:</span>
+                <div class="flex flex-col gap-1.5" id="instructorProfileList"></div>
+              </div>
+
+              <ul class="font-mono text-[11px] text-on-surface-variant space-y-1 list-disc list-inside">
+                <li>Dual Authority: Control Radar & Weapons anytime</li>
+                <li>Visual Scenario Builder & Threat DNA Lab</li>
+                <li>Real-Time Stress Interventions (Jammer failure, Decoys)</li>
+                <li>Doctrine & ROE Configurator (Live hot-reload)</li>
+                <li>Full After-Action Review & Cohort Dossier Analytics</li>
+              </ul>
+            </div>
+
+            <button onclick="SimulationApp.loginInstructorFromModal()" class="w-full bg-primary text-on-primary py-2.5 rounded font-mono text-xs font-bold hover:bg-primary/90 flex items-center justify-center gap-2 shadow-lg transition-transform active:scale-95">
+              <span class="material-symbols-outlined text-[16px]">verified_user</span>
+              AUTHENTICATE AS INSTRUCTOR & ADMIN
+            </button>
+          </div>
+
+        </div>
+      </div>
+
     </div>
   </div>
 
-  <!-- FLOATING AI ASSISTANT LAUNCHER BUTTON -->
-  <button class="fixed bottom-16 right-4 z-40 bg-tertiary text-on-tertiary-container px-3.5 py-2.5 rounded-full shadow-2xl font-mono text-xs font-bold flex items-center gap-2 border border-tertiary/50 hover:scale-105 active:scale-95 transition-all animate-bounce" onclick="toggleAIChatDrawer()">
-    <span class="material-symbols-outlined text-[20px]">smart_toy</span>
-    <span>AI INSTRUCTOR & EXPLAINER</span>
-  </button>
+  <!-- ===================================================================== -->
+  <!-- MODAL: TRAINEE PERFORMANCE SCORECARD & DEBRIEF                         -->
+  <!-- ===================================================================== -->
+  <div id="traineeDebriefModal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="bg-surface-container-lowest border border-tertiary/50 rounded-lg max-w-xl w-full p-6 shadow-2xl flex flex-col gap-5 animate-in fade-in zoom-in-95 duration-150">
+      
+      <!-- Header -->
+      <div class="flex items-center justify-between border-b border-surface-container-high pb-3">
+        <div class="flex items-center gap-2.5">
+          <div class="p-2 bg-tertiary/20 rounded border border-tertiary/40 text-tertiary">
+            <span class="material-symbols-outlined text-[20px]">military_tech</span>
+          </div>
+          <div>
+            <span class="font-mono text-xs text-tertiary font-bold uppercase tracking-wider block">TRAINEE DRILL DEBRIEF SCORECARD</span>
+            <span class="font-mono text-[10px] text-on-surface-variant" id="traineeDebriefSubTitle">MISSION COMPLETED</span>
+          </div>
+        </div>
+        <button onclick="SimulationApp.closeTraineeDebriefModal()" class="text-on-surface-variant hover:text-on-surface p-1 rounded hover:bg-surface-container">
+          <span class="material-symbols-outlined text-[18px]">close</span>
+        </button>
+      </div>
 
-  <!-- JAVASCRIPT APP CONNECTOR -->
+      <!-- Score Banner -->
+      <div class="bg-surface-container p-4 rounded-lg border border-surface-container-highest flex items-center justify-between">
+        <div>
+          <span class="text-[10px] text-on-surface-variant font-mono block">FINAL EVALUATION SCORE:</span>
+          <div class="flex items-baseline gap-2 mt-1">
+            <span class="text-3xl font-extrabold text-on-surface font-mono" id="traineeModalScore">950</span>
+            <span class="text-xs text-on-surface-variant font-mono">/ 1000</span>
+          </div>
+        </div>
+        <div class="text-right">
+          <span class="font-mono text-xs px-3 py-1 rounded bg-primary/20 text-primary border border-primary/40 font-bold inline-block" id="traineeModalGrade">GRADE: MASTER</span>
+          <span class="text-[10px] text-on-surface-variant font-mono block mt-1" id="traineeModalAccuracy">ACCURACY: 100%</span>
+        </div>
+      </div>
+
+      <!-- Quick Metrics Grid -->
+      <div class="grid grid-cols-3 gap-2 font-mono text-xs">
+        <div class="bg-surface-container p-2.5 rounded border border-surface-container-highest text-center">
+          <span class="text-[9px] text-on-surface-variant block">REACTION TIME</span>
+          <span class="text-sm font-bold text-primary mt-0.5 block" id="traineeModalLatency">1.8s</span>
+        </div>
+        <div class="bg-surface-container p-2.5 rounded border border-surface-container-highest text-center">
+          <span class="text-[9px] text-on-surface-variant block">THREATS DEFEATED</span>
+          <span class="text-sm font-bold text-secondary mt-0.5 block" id="traineeModalThreats">5 / 5</span>
+        </div>
+        <div class="bg-surface-container p-2.5 rounded border border-surface-container-highest text-center">
+          <span class="text-[9px] text-on-surface-variant block">ROE VIOLATIONS</span>
+          <span class="text-sm font-bold text-tertiary mt-0.5 block" id="traineeModalViolations">0</span>
+        </div>
+      </div>
+
+      <!-- AI Coach Debrief Highlight -->
+      <div class="p-3 rounded bg-surface-container border border-tertiary/30 flex flex-col gap-1 font-mono text-xs">
+        <span class="text-tertiary font-bold flex items-center gap-1 text-[11px]">
+          <span class="material-symbols-outlined text-[15px]">psychology</span>
+          EXPLAINABLE AI COACH ASSESSMENT:
+        </span>
+        <p class="text-[11px] text-on-surface leading-relaxed mt-1" id="traineeModalAiSummary">
+          Excellent rapid target acquisition and strict adherence to ROE standoff limits. Non-kinetic directional RF jammer neutralized commercial quadcopters without civilian collateral hazards.
+        </p>
+      </div>
+
+      <!-- Trainee Action Buttons including Download Scorecard -->
+      <div class="flex flex-col sm:flex-row items-center gap-2 pt-2 border-t border-surface-container-high font-mono text-xs">
+        <button onclick="SimulationApp.downloadScorecard();" class="w-full sm:w-auto flex-1 bg-primary text-on-primary py-2 rounded font-bold flex items-center justify-center gap-1 shadow-md hover:bg-primary/90">
+          <span class="material-symbols-outlined text-[16px]">download</span>
+          DOWNLOAD SCORECARD (PDF)
+        </button>
+        <button onclick="SimulationApp.replayCurrentScenario(); SimulationApp.closeTraineeDebriefModal();" class="w-full sm:w-auto flex-1 bg-surface-container text-on-surface py-2 rounded border border-surface-container-highest hover:bg-surface-container-high font-bold flex items-center justify-center gap-1">
+          <span class="material-symbols-outlined text-[16px]">replay</span>
+          REPLAY DRILL
+        </button>
+        <button onclick="SimulationApp.loadNextSequentialDrill(); SimulationApp.closeTraineeDebriefModal();" class="w-full sm:w-auto flex-1 bg-tertiary text-on-tertiary py-2 rounded hover:bg-tertiary/90 font-bold flex items-center justify-center gap-1 shadow-md">
+          <span class="material-symbols-outlined text-[16px]">skip_next</span>
+          NEXT DRILL
+        </button>
+        <button onclick="SimulationApp.requestInstructorAnalysis();" class="w-full sm:w-auto flex-1 bg-primary/20 text-primary border border-primary/40 py-2 rounded hover:bg-primary/30 font-bold flex items-center justify-center gap-1">
+          <span class="material-symbols-outlined text-[16px]">school</span>
+          INSTRUCTOR AAR
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- VENDOR LIBRARIES (LOCAL 100% OFFLINE) -->
+  <script src="/vendor/three.min.js"></script>
+  <script src="/vendor/chart.min.js"></script>
+
+  <!-- APPLICATION CORE SCRIPTS -->
+  <script src="/src/audio.js"></script>
+  <script src="/src/scenarios.js"></script>
+  <script src="/src/scoring.js"></script>
+  <script src="/src/radar2d.js"></script>
+  <script src="/src/simulation3d.js"></script>
+  <script src="/src/sensors.js"></script>
+  <script src="/src/aar.js"></script>
+  <script src="/src/instructor.js"></script>
+  <script src="/src/demo_tour.js"></script>
   <script src="/src/app.js"></script>
 </body>
 </html>

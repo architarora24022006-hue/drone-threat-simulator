@@ -1,5 +1,16 @@
+# Dependencies
+node_modules/
+
 # Database & logs
 *.db
 *.log
 __pycache__/
 .DS_Store
+
+# Private Master Defense Database (Local admin access only)
+defense_clearance_roster.xlsx
+defense_clearance_roster.csv
+
+# Temporary test scripts
+test_*.py
+verify_api.py
